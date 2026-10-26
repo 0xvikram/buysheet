@@ -1,19 +1,21 @@
-import { Bricolage_Grotesque, IBM_Plex_Mono } from 'next/font/google'
+import { Geist, Geist_Mono } from 'next/font/google'
+import { BRAND } from '../lib/brand.js'
 import './globals.css'
 
-const display = Bricolage_Grotesque({ subsets: ['latin'], variable: '--font-display' })
-const mono = IBM_Plex_Mono({ subsets: ['latin'], weight: ['400', '500'], variable: '--font-mono' })
+// One modern sans for headlines and text, plus its mono for small labels and code.
+const sans = Geist({ subsets: ['latin'], variable: '--font-sans' })
+const mono = Geist_Mono({ subsets: ['latin'], variable: '--font-mono' })
 
 export const metadata = {
-  title: 'Buysheet',
-  description: 'Paste a supplier’s brand list. See what to stock, consider and skip for your shop, with the evidence.',
+  title: { default: `${BRAND.name}: ${BRAND.tagline}`, template: `%s · ${BRAND.name}` },
+  description: BRAND.pitch,
 }
 
-export const viewport = { width: 'device-width', initialScale: 1 }
+export const viewport = { width: 'device-width', initialScale: 1, themeColor: '#11121c' }
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className={`${display.variable} ${mono.variable}`}>
+    <html lang="en" className={`${sans.variable} ${mono.variable}`}>
       <body>{children}</body>
     </html>
   )
