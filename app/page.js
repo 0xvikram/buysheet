@@ -1,11 +1,19 @@
 import Link from 'next/link'
 import Icon from '../components/app/Icon.js'
 import Footer from '../components/Footer.js'
+import CountUp from '../components/motion/CountUp.js'
+import { Float, HeroIn, HeroTitle, LiveShapes } from '../components/motion/Hero.js'
+import Magnetic from '../components/motion/Magnetic.js'
+import Reveal from '../components/motion/Reveal.js'
+import SortDemo from '../components/motion/SortDemo.js'
+import Spotlight from '../components/motion/Spotlight.js'
+import Tilt from '../components/motion/Tilt.js'
+import TypeCode from '../components/motion/TypeCode.js'
 import Nav from '../components/Nav.js'
-import Shapes from '../components/Shapes.js'
 import { BRAND } from '../lib/brand.js'
-import { MARKET, PROOF } from '../lib/stats.js'
 import { TOOLS } from '../lib/mcp.js'
+import { MARKET, PROOF } from '../lib/stats.js'
+import denver from '../public/examples/denver.json'
 
 const FEATURES = [
   ['drops', 'Sort any line sheet', 'Paste the brand column from any supplier or marketplace. Up to 40 brands, sorted in under a minute.'],
@@ -25,6 +33,16 @@ const MCP = `{
   }
 }`
 
+// The real Denver drop, for the live demo and the marquee.
+const drop = denver.turns.flatMap((t) => t.replies).find((r) => r.type === 'drop').drop
+const pick = (g) => drop.sheet.rows.filter((r) => r.group === g).slice(0, 3)
+const DEMO = [0, 1, 2].flatMap((i) => [pick('stock')[i], pick('skip')[i], pick('consider')[i]]).filter(Boolean).map(({ name, group }) => ({ name, group }))
+const TICKER = [
+  'Built on Qloo taste data', ...drop.sheet.rows.filter((r) => r.group === 'stock').map((r) => `${r.name} · stock`),
+  'Checked against stockists in 12 US cities', ...drop.sheet.rows.filter((r) => r.group === 'skip').map((r) => `${r.name} · skip`),
+  '38 of 46 shop brands recognised', 'Works in Claude & ChatGPT via MCP',
+]
+
 export default function Home() {
   return (
     <>
@@ -32,125 +50,135 @@ export default function Home() {
       <main>
         <section className="hero">
           <div className="wrap">
-            <Link href="/app/map" className="eyebrow glass"><b>New</b> Market map: where any brand fits across 12 US cities →</Link>
-            <h1>Know what <em>pops</em><br />before you buy.</h1>
-            <p className="lead">
-              {BRAND.name} is the buying agent for independent shops. Paste a supplier&apos;s brand list, and it sorts every brand
-              into stock, consider or skip for your crowd, with the evidence behind each call.
-            </p>
-            <div className="ctas">
-              <Link href="/app/new" className="btn primary lg">Start free →</Link>
-              <Link href="/app/explore" className="btn glass lg">See sample shops</Link>
-            </div>
-            <p className="note">Free while in beta · No card · US, UK, Europe, Japan and Australia</p>
-            <div className="stage" id="product">
-              <Shapes />
-              <div className="shot glass">
+            <HeroIn delay={0}>
+              <Link href="/app/map" className="eyebrow glass"><b>New</b> Market map: where any brand fits across 12 US cities →</Link>
+            </HeroIn>
+            <HeroTitle lines={['Know what pops', 'before you buy.']} accent="pops" />
+            <HeroIn delay={0.55}>
+              <p className="lead">
+                {BRAND.name} is the buying agent for independent shops. Paste a supplier&apos;s brand list, and it sorts every brand
+                into stock, consider or skip for your crowd, with the evidence behind each call.
+              </p>
+              <div className="ctas">
+                <Magnetic><Link href="/app/new" className="btn primary lg">Start free →</Link></Magnetic>
+                <Magnetic><Link href="/app/explore" className="btn glass lg">See sample shops</Link></Magnetic>
+              </div>
+              <p className="note">Free while in beta · No card · US, UK, Europe, Japan and Australia</p>
+            </HeroIn>
+            <HeroIn delay={0.75} className="stage">
+              <span id="product" style={{ position: 'absolute', top: -80 }} />
+              <LiveShapes />
+              <Tilt className="shot glass" max={4}>
                 <div className="bar" aria-hidden="true"><i /><i /><i /></div>
                 <img className="only-light" src="/product-light.png" width="2160" height="1350" alt="A Restocked drop: 23 brands for a Denver gift shop sorted into stock, consider and skip, with taste and local ranks and the agent beside it" />
                 <img className="only-dark" src="/product-dark.png" width="2160" height="1350" alt="" />
-              </div>
-              <div className="float glass f1" aria-hidden="true"><b>Stanley → Stock</b>1st of 23 for Patagonia fans.<br /><i className="pk">⇄ bestseller list says skip</i></div>
-              <div className="float glass f2" aria-hidden="true"><b>Filson fits Seattle</b>#1 of 12 US cities on Qloo.<br /><i className="lm">Market map</i></div>
-            </div>
+              </Tilt>
+              <Float className="float glass f1"><b>Stanley → Stock</b>1st of 23 for Patagonia fans.<br /><i className="pk">⇄ bestseller list says skip</i></Float>
+              <Float className="float glass f2" delay={1.4}><b>Filson fits Seattle</b>#1 of 12 US cities on Qloo.<br /><i className="lm">Market map</i></Float>
+            </HeroIn>
           </div>
         </section>
 
         <section className="trust" aria-label="Highlights">
-          <div className="wrap">
-            <span>Built on <b>Qloo</b> taste data</span>
-            <span>Checked against stockists in <b>12 US cities</b></span>
-            <span><b>38 of 46</b> real shop brands recognised</span>
-            <span>Works in <b>Claude &amp; ChatGPT</b> via MCP</span>
+          <div className="marquee">
+            <div className="marquee-track">
+              {[...TICKER, ...TICKER].map((t, i) => <span key={i} aria-hidden={i >= TICKER.length ? true : undefined}>{t}<i className="sep" /></span>)}
+            </div>
           </div>
         </section>
 
         <section className="section" id="problem">
           <div className="wrap">
-            <div className="section-head">
+            <Reveal className="section-head">
               <p className="kicker">The problem</p>
               <h2>Every order is a bet with your cash.</h2>
               <p>Independent shops commit money to stock months ahead, on instinct and a rep&apos;s word. Sales history can&apos;t help with a brand you&apos;ve never carried, and a bestseller list knows nothing about your crowd.</p>
-            </div>
-            <div className="grid-4">
-              {MARKET.map((s) => (
-                <div key={s.big} className="card stat glass"><b>{s.big}</b><span>{s.line}</span><small><a href={s.href} target="_blank" rel="noreferrer">{s.source}</a></small></div>
+            </Reveal>
+            <Spotlight className="grid-4">
+              {MARKET.map((s, i) => (
+                <Reveal key={s.big} delay={i * 0.08} className="card stat glass spot">
+                  <b><CountUp value={s.big} /></b><span>{s.line}</span><small><a href={s.href} target="_blank" rel="noreferrer">{s.source}</a></small>
+                </Reveal>
               ))}
-            </div>
+            </Spotlight>
           </div>
         </section>
 
         <section className="section">
           <div className="wrap">
-            <div className="section-head center">
+            <Reveal className="section-head center">
               <p className="kicker">The product</p>
               <h2>A buyer&apos;s workspace, with an agent that shows its work.</h2>
               <p>Everything a small shop needs to decide what to order, in one place.</p>
-            </div>
-            <div className="grid-3">
-              {FEATURES.map(([icon, h, p]) => (
-                <div key={h} className="card feature glass"><div className="ic"><Icon name={icon} /></div><h3>{h}</h3><p>{p}</p></div>
+            </Reveal>
+            <Spotlight className="grid-3">
+              {FEATURES.map(([icon, h, p], i) => (
+                <Reveal key={h} delay={(i % 3) * 0.08} className="card feature glass spot">
+                  <div className="ic"><Icon name={icon} /></div><h3>{h}</h3><p>{p}</p>
+                </Reveal>
               ))}
-            </div>
+            </Spotlight>
           </div>
         </section>
 
         <section className="section" id="how">
-          <div className="wrap split">
-            <div>
+          <div className="wrap">
+            <Reveal className="section-head">
               <p className="kicker">How it works</p>
               <h2>Your crowd, not the average shopper.</h2>
-              <p className="mute" style={{ fontSize: 16.5, lineHeight: 1.6 }}>
-                {BRAND.name} asks Qloo two separate questions about every brand: do fans of what your customers love also love
-                it, and how does it rank in your city? Taste leads; the city lifts or lowers. Anything Qloo isn&apos;t sure about is
-                checked with you, never guessed.
+              <p>
+                {BRAND.name} asks Qloo two separate questions about every brand: do fans of what your customers love also love it, and
+                how does it rank in your city? Taste leads; the city lifts or lowers. Anything Qloo isn&apos;t sure about is checked with
+                you, never guessed. Here it is sorting a real list:
               </p>
-            </div>
-            <ol className="card" style={{ listStyle: 'none', margin: 0, padding: 0 }}>
+            </Reveal>
+            <Reveal><SortDemo rows={DEMO} /></Reveal>
+            <div className="steps-row">
               {[['Set up your shop once', 'Where it is, and the brands, musicians or shows your regulars love.'], ['Paste a supplier list', 'Any line sheet. Unclear names are confirmed with you.'], ['Get your drop', 'Stock, consider, skip, with reasons. Review, ask follow-ups, export.']].map(([h, p], i) => (
-                <li key={h} style={{ display: 'flex', gap: 14, padding: '18px 20px', borderBottom: i < 2 ? '1px solid var(--line-2)' : 0 }}>
-                  <span className="logo-sq" style={{ background: 'var(--text)', color: 'var(--bg)', borderColor: 'var(--text)' }}>{i + 1}</span>
-                  <div><b>{h}</b><p className="mute" style={{ margin: '2px 0 0' }}>{p}</p></div>
-                </li>
+                <Reveal key={h} delay={i * 0.1} className="step-item">
+                  <span className="step-n">{String(i + 1).padStart(2, '0')}</span><b>{h}</b><p>{p}</p>
+                </Reveal>
               ))}
-            </ol>
+            </div>
           </div>
         </section>
 
         <section className="section" id="proof">
           <div className="wrap">
-            <div className="section-head">
+            <Reveal className="section-head">
               <p className="kicker">Why trust it</p>
               <h2>We checked it against reality.</h2>
               <p>Before building, we compared Qloo&apos;s city rankings with where brands are actually stocked. Then we made the agent show every call it makes.</p>
-            </div>
-            <div className="grid-3">
-              {PROOF.map((s) => <div key={s.big} className="card stat glass"><b>{s.big}</b><span>{s.line}</span><small>{s.source}</small></div>)}
-            </div>
+            </Reveal>
+            <Spotlight className="grid-3">
+              {PROOF.map((s, i) => (
+                <Reveal key={s.big} delay={i * 0.08} className="card stat glass spot"><b><CountUp value={s.big} /></b><span>{s.line}</span><small>{s.source}</small></Reveal>
+              ))}
+            </Spotlight>
           </div>
         </section>
 
         <section className="section" id="assistants">
           <div className="wrap split">
-            <div>
+            <Reveal>
               <p className="kicker">For AI assistants</p>
               <h2>Already live in your AI.</h2>
               <p className="mute" style={{ fontSize: 16.5, lineHeight: 1.6, marginBottom: 20 }}>{BRAND.name} is an MCP server. Add one line to Claude or ChatGPT and your assistant gets the same tools and the same data.</p>
               <ul className="ticks">{TOOLS.map((t) => <li key={t.name}><b className="mono" style={{ fontSize: 13 }}>{t.name}</b> · {t.title}</li>)}</ul>
-            </div>
-            <pre className="code" aria-label="MCP configuration">{MCP}</pre>
+            </Reveal>
+            <Reveal delay={0.1}><TypeCode code={MCP} label="MCP configuration" /></Reveal>
           </div>
         </section>
 
         <section className="wrap">
-          <div className="cta-band">
-            <Shapes />
+          <Reveal className="cta-band">
+            <LiveShapes className="shapes" depth={40} />
             <div><h2>Your next order, sorted.</h2><p>Free while in beta. Set up your shop in a minute.</p></div>
-            <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-              <Link href="/app/new" className="btn brand lg">Start free</Link>
-              <Link href="/pricing" className="btn lg" style={{ background: 'rgba(11,11,11,.55)', color: '#f5f5f2', borderColor: 'rgba(255,255,255,.2)', backdropFilter: 'blur(12px)' }}>See pricing</Link>
+            <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', position: 'relative' }}>
+              <Magnetic><Link href="/app/new" className="btn brand lg">Start free</Link></Magnetic>
+              <Magnetic><Link href="/pricing" className="btn lg" style={{ background: 'rgba(11,11,11,.55)', color: '#f5f5f2', borderColor: 'rgba(255,255,255,.2)', backdropFilter: 'blur(12px)' }}>See pricing</Link></Magnetic>
             </div>
-          </div>
+          </Reveal>
         </section>
       </main>
       <Footer />

@@ -8,6 +8,7 @@ import DropTable from '../../../../components/app/DropTable.js'
 import Icon from '../../../../components/app/Icon.js'
 import MapView from '../../../../components/app/MapView.js'
 import Review from '../../../../components/app/Review.js'
+import CountUp from '../../../../components/motion/CountUp.js'
 import { Topbar } from '../../../../components/app/Shell.js'
 import { useWorkspace } from '../../../../components/app/Workspace.js'
 import { downloadCsv, shareDrop } from '../../../../components/app/actions.js'
@@ -86,9 +87,9 @@ function DropPage() {
             </div>
           </div>
           <div className="kpis">
-            <div className="card kpi"><small><i className="dot stock" />Stock</small><b>{c.stock}</b><span>Strong taste and local fit</span></div>
-            <div className="card kpi"><small><i className="dot consider" />Consider</small><b>{c.consider}</b><span>Mixed signals</span></div>
-            <div className="card kpi"><small><i className="dot skip" />Skip</small><b>{c.skip}</b><span>Weak fit for this crowd</span></div>
+            <div className="card kpi"><small><i className="dot stock" />Stock</small><b><CountUp value={c.stock} duration={0.9} /></b><span>Strong taste and local fit</span></div>
+            <div className="card kpi"><small><i className="dot consider" />Consider</small><b><CountUp value={c.consider} duration={0.9} /></b><span>Mixed signals</span></div>
+            <div className="card kpi"><small><i className="dot skip" />Skip</small><b><CountUp value={c.skip} duration={0.9} /></b><span>Weak fit for this crowd</span></div>
             <div className="card kpi"><small>vs a bestseller list</small><b>{flips} flip{flips === 1 ? '' : 's'}</b><span>{flips ? drop.baseline.flips.slice(0, 3).map((f) => f.name).join(', ') : 'Your crowd is close to average'}</span></div>
           </div>
           <div className="tabs" role="tablist">

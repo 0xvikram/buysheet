@@ -2,11 +2,13 @@ import Link from 'next/link'
 import { BRAND } from '../lib/brand.js'
 import Mark from './Mark.js'
 import ThemeToggle from './ThemeToggle.js'
+import Ambient from './motion/Ambient.js'
 
 export default function Nav({ current }) {
   const link = (href, label, id) => <Link href={href} aria-current={current === id ? 'page' : undefined}>{label}</Link>
   return (
-    <header className="site-nav">
+    <header className="site-nav" id="top">
+      <Ambient />
       <div className="wrap">
         <Link href="/" className="wordmark" aria-label={`${BRAND.name} home`}><Mark size={26} />{BRAND.name}</Link>
         <nav aria-label="Main">

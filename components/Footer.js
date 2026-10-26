@@ -1,6 +1,8 @@
 import Link from 'next/link'
 import { BRAND } from '../lib/brand.js'
 import Mark from './Mark.js'
+import Magnetic from './motion/Magnetic.js'
+import Wordmark from './motion/Wordmark.js'
 
 const COLUMNS = [
   {
@@ -51,9 +53,13 @@ export default function Footer() {
           </nav>
         ))}
       </div>
+      <div className="footer-xl">
+        <Wordmark text={BRAND.name} />
+      </div>
       <div className="footer-bottom">
         <p>© {new Date().getFullYear()} {BRAND.name}. Built on Qloo’s taste data for the Qloo Agentic Hackathon.</p>
         <p>Rankings describe what groups of people tend to like. They are not sales forecasts, and say nothing about any one person.</p>
+        <Magnetic><a href="#top" className="btn sm to-top" aria-label="Back to top">↑ Top</a></Magnetic>
       </div>
     </footer>
   )

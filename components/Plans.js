@@ -2,6 +2,8 @@
 
 import Link from 'next/link'
 import { useState } from 'react'
+import CountUp from './motion/CountUp.js'
+import Spotlight from './motion/Spotlight.js'
 
 // Proposed plans. Billing isn't live: everything is free during the beta.
 const PLANS = [
@@ -21,19 +23,19 @@ export default function Plans() {
           <button aria-pressed={yearly} onClick={() => setYearly(true)}>Yearly · save 20%</button>
         </div>
       </div>
-      <div className="plans">
+      <Spotlight className="plans">
         {PLANS.map((p) => (
-          <div key={p.name} className={`card plan${p.featured ? ' featured' : ''}`}>
+          <div key={p.name} className={`card plan spot${p.featured ? ' featured' : ''}`}>
             {p.featured && <span className="badge new tag">Most shops</span>}
             {p.soon && <span className="badge plain tag">Coming soon</span>}
             <h3>{p.name}</h3>
             <p className="for">{p.for}</p>
-            <div className="price">${yearly ? p.yearly : p.monthly}<small> / month{p.monthly && yearly ? ', billed yearly' : ''}</small></div>
+            <div className="price">$<CountUp value={yearly ? p.yearly : p.monthly} duration={0.8} /><small> / month{p.monthly && yearly ? ', billed yearly' : ''}</small></div>
             <ul className="ticks">{p.items.map((i) => <li key={i}>{i}</li>)}</ul>
             {p.href ? <Link href={p.href} className={`btn${p.featured ? ' primary' : ''}`}>{p.cta}</Link> : <span className="btn" aria-disabled="true" style={{ opacity: 0.6, cursor: 'default', marginTop: 'auto' }}>{p.cta}</span>}
           </div>
         ))}
-      </div>
+      </Spotlight>
     </>
   )
 }

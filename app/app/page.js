@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { useState } from 'react'
 import ConfirmButton from '../../components/app/ConfirmButton.js'
 import Icon from '../../components/app/Icon.js'
+import CountUp from '../../components/motion/CountUp.js'
 import { Topbar } from '../../components/app/Shell.js'
 import { useWorkspace } from '../../components/app/Workspace.js'
 import { loadSample } from '../../components/app/actions.js'
@@ -66,10 +67,10 @@ export default function Overview() {
           <div className="acts"><Link href="/app/map" className="btn">Map a brand</Link><Link href="/app/new" className="btn primary"><Icon name="plus" size={14} /> New drop</Link></div>
         </div>
         <div className="kpis">
-          <div className="card kpi"><small>Drops</small><b>{o.drops}</b><span>{o.brands} brands sorted</span></div>
+          <div className="card kpi"><small>Drops</small><b><CountUp value={o.drops} /></b><span>{o.brands} brands sorted</span></div>
           <div className="card kpi"><small>Reviewed by you</small><b>{o.reviewed}<span style={{ fontSize: 14, color: 'var(--faint)' }}> / {o.brands}</span></b><span>Brands you made the call on</span></div>
           <div className="card kpi"><small>Agreement with agent</small><b>{o.agreement === null ? '—' : `${o.agreement}%`}</b><span>{o.agreement === null ? 'Review a drop to see it' : 'Of the calls you made'}</span></div>
-          <div className="card kpi"><small>Bestseller flips</small><b>{o.flips}</b><span>Where your crowd differs</span></div>
+          <div className="card kpi"><small>Bestseller flips</small><b><CountUp value={o.flips} /></b><span>Where your crowd differs</span></div>
         </div>
         <div className="ov-grid">
           <div className="card">

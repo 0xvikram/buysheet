@@ -1,6 +1,7 @@
 import Footer from '../../components/Footer.js'
 import Nav from '../../components/Nav.js'
 import Plans from '../../components/Plans.js'
+import Reveal from '../../components/motion/Reveal.js'
 import { BRAND } from '../../lib/brand.js'
 
 export const metadata = { title: 'Pricing', description: `${BRAND.name} plans for independent shops, multi-store owners and brands.` }
@@ -29,11 +30,11 @@ export default function Pricing() {
       <main>
         <section className="section" style={{ paddingBottom: 48 }}>
           <div className="wrap">
-            <div className="section-head center">
+            <Reveal className="section-head center">
               <p className="kicker">Pricing</p>
               <h2>Simple plans. Free while in beta.</h2>
               <p>Start free. Upgrade when {BRAND.name} is part of every order. Brands pay to see where they fit, so shops never pay for that.</p>
-            </div>
+            </Reveal>
             <Plans />
           </div>
         </section>
@@ -60,7 +61,7 @@ export default function Pricing() {
         <section className="section">
           <div className="wrap">
             <div className="section-head"><p className="kicker">Questions</p><h2>Good to know</h2></div>
-            <div className="faq">{FAQ.map(([q, a]) => <div key={q} className="card"><h3>{q}</h3><p>{a}</p></div>)}</div>
+            <div className="faq">{FAQ.map(([q, a], i) => <Reveal key={q} delay={i * 0.06} className="card glass"><h3>{q}</h3><p>{a}</p></Reveal>)}</div>
           </div>
         </section>
       </main>
