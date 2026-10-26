@@ -1,6 +1,6 @@
 'use client'
 
-// Light by default. The choice is remembered in this browser; the root layout applies it before paint.
+// Dark by default. The choice is remembered in this browser; the root layout applies it before paint.
 export const THEME_KEY = 'restocked:theme'
 
 export default function ThemeToggle({ className = 'icon-btn' }) {

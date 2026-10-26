@@ -2,6 +2,7 @@ import Link from 'next/link'
 import Icon from '../components/app/Icon.js'
 import Footer from '../components/Footer.js'
 import Nav from '../components/Nav.js'
+import Shapes from '../components/Shapes.js'
 import { BRAND } from '../lib/brand.js'
 import { MARKET, PROOF } from '../lib/stats.js'
 import { TOOLS } from '../lib/mcp.js'
@@ -31,21 +32,26 @@ export default function Home() {
       <main>
         <section className="hero">
           <div className="wrap">
-            <Link href="/app/map" className="eyebrow"><b>New</b> Market map: where any brand fits across 12 US cities →</Link>
-            <h1>Know what pops <em>before you buy.</em></h1>
+            <Link href="/app/map" className="eyebrow glass"><b>New</b> Market map: where any brand fits across 12 US cities →</Link>
+            <h1>Know what <em>pops</em><br />before you buy.</h1>
             <p className="lead">
               {BRAND.name} is the buying agent for independent shops. Paste a supplier&apos;s brand list, and it sorts every brand
               into stock, consider or skip for your crowd, with the evidence behind each call.
             </p>
             <div className="ctas">
-              <Link href="/app/new" className="btn brand lg">Start free</Link>
-              <Link href="/app/explore" className="btn lg">See sample shops</Link>
+              <Link href="/app/new" className="btn primary lg">Start free →</Link>
+              <Link href="/app/explore" className="btn glass lg">See sample shops</Link>
             </div>
             <p className="note">Free while in beta · No card · US, UK, Europe, Japan and Australia</p>
-            <div className="shot" id="product">
-              <div className="bar" aria-hidden="true"><i /><i /><i /></div>
-              <img className="only-light" src="/product-light.png" width="2160" height="1350" alt="A Restocked drop: 23 brands for a Denver gift shop sorted into stock, consider and skip, with taste and local ranks and the agent beside it" />
-              <img className="only-dark" src="/product-dark.png" width="2160" height="1350" alt="" />
+            <div className="stage" id="product">
+              <Shapes />
+              <div className="shot glass">
+                <div className="bar" aria-hidden="true"><i /><i /><i /></div>
+                <img className="only-light" src="/product-light.png" width="2160" height="1350" alt="A Restocked drop: 23 brands for a Denver gift shop sorted into stock, consider and skip, with taste and local ranks and the agent beside it" />
+                <img className="only-dark" src="/product-dark.png" width="2160" height="1350" alt="" />
+              </div>
+              <div className="float glass f1" aria-hidden="true"><b>Stanley → Stock</b>1st of 23 for Patagonia fans.<br /><i className="pk">⇄ bestseller list says skip</i></div>
+              <div className="float glass f2" aria-hidden="true"><b>Filson fits Seattle</b>#1 of 12 US cities on Qloo.<br /><i className="lm">Market map</i></div>
             </div>
           </div>
         </section>
@@ -68,7 +74,7 @@ export default function Home() {
             </div>
             <div className="grid-4">
               {MARKET.map((s) => (
-                <div key={s.big} className="card stat"><b>{s.big}</b><span>{s.line}</span><small><a href={s.href} target="_blank" rel="noreferrer">{s.source}</a></small></div>
+                <div key={s.big} className="card stat glass"><b>{s.big}</b><span>{s.line}</span><small><a href={s.href} target="_blank" rel="noreferrer">{s.source}</a></small></div>
               ))}
             </div>
           </div>
@@ -83,7 +89,7 @@ export default function Home() {
             </div>
             <div className="grid-3">
               {FEATURES.map(([icon, h, p]) => (
-                <div key={h} className="card feature"><div className="ic"><Icon name={icon} /></div><h3>{h}</h3><p>{p}</p></div>
+                <div key={h} className="card feature glass"><div className="ic"><Icon name={icon} /></div><h3>{h}</h3><p>{p}</p></div>
               ))}
             </div>
           </div>
@@ -119,7 +125,7 @@ export default function Home() {
               <p>Before building, we compared Qloo&apos;s city rankings with where brands are actually stocked. Then we made the agent show every call it makes.</p>
             </div>
             <div className="grid-3">
-              {PROOF.map((s) => <div key={s.big} className="card stat"><b>{s.big}</b><span>{s.line}</span><small>{s.source}</small></div>)}
+              {PROOF.map((s) => <div key={s.big} className="card stat glass"><b>{s.big}</b><span>{s.line}</span><small>{s.source}</small></div>)}
             </div>
           </div>
         </section>
@@ -138,10 +144,11 @@ export default function Home() {
 
         <section className="wrap">
           <div className="cta-band">
+            <Shapes />
             <div><h2>Your next order, sorted.</h2><p>Free while in beta. Set up your shop in a minute.</p></div>
             <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
               <Link href="/app/new" className="btn brand lg">Start free</Link>
-              <Link href="/pricing" className="btn lg" style={{ background: 'transparent', color: '#eceef3', borderColor: '#2c2f3d' }}>See pricing</Link>
+              <Link href="/pricing" className="btn lg" style={{ background: 'rgba(11,11,11,.55)', color: '#f5f5f2', borderColor: 'rgba(255,255,255,.2)', backdropFilter: 'blur(12px)' }}>See pricing</Link>
             </div>
           </div>
         </section>

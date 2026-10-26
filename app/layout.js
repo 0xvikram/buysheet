@@ -11,14 +11,14 @@ export const metadata = {
   description: BRAND.pitch,
 }
 
-export const viewport = { width: 'device-width', initialScale: 1, themeColor: '#0c0d13' }
+export const viewport = { width: 'device-width', initialScale: 1, themeColor: '#0b0b0b' }
 
-// Applies the saved theme before the first paint, so dark mode never flashes light.
+// Dark is the default; a saved choice is applied before the first paint so nothing flashes.
 const THEME_SCRIPT = `try{var t=localStorage.getItem('restocked:theme');if(t==='dark'||t==='light')document.documentElement.dataset.theme=t}catch(e){}`
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className={`${sans.variable} ${mono.variable}`} data-theme="light" suppressHydrationWarning>
+    <html lang="en" className={`${sans.variable} ${mono.variable}`} data-theme="dark" suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
       </head>
