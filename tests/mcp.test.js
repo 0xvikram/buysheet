@@ -16,9 +16,9 @@ test('notifications get no reply', async () => {
   assert.equal(await handle({ jsonrpc: '2.0', method: 'notifications/initialized' }, run), null)
 })
 
-test('tools/list returns the four tools with schemas', async () => {
+test('tools/list returns the five tools with schemas', async () => {
   const r = await handle({ jsonrpc: '2.0', id: 3, method: 'tools/list' }, run)
-  assert.deepEqual(r.result.tools.map((t) => t.name), ['sort_brand_list', 'find_similar_brands', 'describe_audience', 'compare_brands'])
+  assert.deepEqual(r.result.tools.map((t) => t.name), ['sort_brand_list', 'find_similar_brands', 'describe_audience', 'map_brand_cities', 'compare_brands'])
   assert.ok(TOOLS.every((t) => t.inputSchema.type === 'object' && t.description))
 })
 

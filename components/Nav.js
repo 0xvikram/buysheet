@@ -10,6 +10,7 @@ export default function Nav({ current }) {
         <span>{BRAND.name}</span>
       </Link>
       <nav aria-label="Main">
+        <Link href="/feed" aria-current={current === 'feed' ? 'page' : undefined}>Feed</Link>
         <Link href="/#how" aria-current={current === 'how' ? 'page' : undefined}>How it works</Link>
         <Link href="/#assistants">For AI assistants</Link>
         <Link href="/pricing" aria-current={current === 'pricing' ? 'page' : undefined}>Pricing</Link>

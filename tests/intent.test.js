@@ -78,3 +78,12 @@ test('adding brands to the list', () => {
   assert.deepEqual(parse('Add Danner and Sanuk to my list'), { intent: 'setup', city: null, loves: [], names: ['Danner', 'Sanuk'], go: true })
   assert.deepEqual(parse('add Faherty').names, ['Faherty'])
 })
+
+test('map questions name one brand', () => {
+  assert.deepEqual(parse('Where does Filson fit?'), { intent: 'map', name: 'Filson' })
+  assert.deepEqual(parse('where would Le Labo sell best'), { intent: 'map', name: 'Le Labo' })
+  assert.deepEqual(parse('Best cities for Topo Designs'), { intent: 'map', name: 'Topo Designs' })
+  assert.deepEqual(parse('show me a map of Baggu'), { intent: 'map', name: 'Baggu' })
+  assert.deepEqual(parse('Where should I sell Stanley?'), { intent: 'map', name: 'Stanley' })
+  assert.equal(parse('What if I opened in Austin?').intent, 'whatif')
+})
