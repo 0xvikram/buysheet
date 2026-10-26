@@ -6,16 +6,16 @@ const COLUMNS = [
   {
     title: 'Product',
     links: [
-      ['Buying agent', '/app'],
-      ['How it works', '/#how'],
+      ['Workspace', '/app'],
+      ['Market map', '/app/map'],
       ['Pricing', '/pricing'],
-      ['See a real example', '/app?example=denver'],
+      ['Sample shops', '/app/explore'],
     ],
   },
   {
     title: 'For builders',
     links: [
-      ['Use it from your AI assistant', '/#assistants'],
+      ['Connect your AI assistant', '/app/connect'],
       ['MCP endpoint', '/#assistants'],
       ['Why trust it', '/#proof'],
     ],
@@ -23,9 +23,9 @@ const COLUMNS = [
   {
     title: 'Who it’s for',
     links: [
-      ['Gift & lifestyle shops', '/app?example=denver'],
-      ['Apothecaries & beauty', '/app?example=brooklyn'],
-      ['Brands (coming soon)', '/pricing'],
+      ['Gift & lifestyle shops', '/app/explore/denver'],
+      ['Beauty & apothecary', '/app/explore/losangeles'],
+      ['Brands', '/pricing'],
     ],
   },
 ]
@@ -36,11 +36,11 @@ export default function Footer() {
       <div className="footer-top">
         <div className="footer-brand">
           <Link href="/" className="wordmark" aria-label={`${BRAND.name} home`}>
-            <Mark size={30} />
-            <span>{BRAND.name}</span>
+            <Mark size={26} />
+            {BRAND.name}
           </Link>
           <p>{BRAND.pitch}</p>
-          <Link href="/app" className="btn lime small">Start a drop, free</Link>
+          <Link href="/app/new" className="btn primary">Start free</Link>
         </div>
         {COLUMNS.map((c) => (
           <nav key={c.title} aria-label={c.title} className="footer-col">

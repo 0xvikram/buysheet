@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import { FITS } from '../lib/cities.js'
 
 // A dotted map of the lower 48, drawn from a rough outline: no map library, no tiles, no key.
@@ -49,15 +49,11 @@ const DOTS = (() => {
 const SIZE = { strong: 15, fair: 10, weak: 7, none: 6 }
 const BELOW = new Set(['Portland', 'Los Angeles', 'Atlanta']) // labels that would collide above a neighbour
 
-/** map: { brand: { name }, rows: [{ name, lat, lon, fit, rank }] } */
-export default function CityMap({ map, compact = false }) {
-  const [focus, setFocus] = useState(null)
-  const rows = map.rows
-  const placed = useMemo(() => rows.map((r) => ({ ...r, xy: project(r.lon, r.lat) })), [rows])
-  const shown = focus ? placed.find((r) => r.name === focus) : null
-
+/** map: { brand: { name }, rows: [{ name, lat, lon, fit, rank }] }. `focus` and `onFocus` link it to a list. */
+export default function CityMap({ map, compact = false, focus = null, onFocus = () => {} }) {
+  const placed = useMemo(() => map.rows.map((r) => ({ ...r, xy: project(r.lon, r.lat) })), [map.rows])
   return (
-    <figure className={`citymap${compact ? ' compact' : ''}`} aria-label={`Where ${map.brand.name} fits across US cities`}>
+    <figure className="citymap" aria-label={`Where ${map.brand.name} fits across US cities`}>
       <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-hidden={compact ? true : undefined}>
         <g className="land">
           {DOTS.map(([x, y], i) => <circle key={i} cx={x} cy={y} r={1.6} />)}
@@ -67,38 +63,20 @@ export default function CityMap({ map, compact = false }) {
             key={r.name}
             className={`city ${r.fit}${focus === r.name ? ' on' : ''}`}
             transform={`translate(${r.xy[0]} ${r.xy[1]})`}
-            style={{ animationDelay: `${i * 70}ms` }}
+            style={{ animationDelay: `${i * 60}ms` }}
             tabIndex={compact ? -1 : 0}
-            onMouseEnter={() => setFocus(r.name)}
-            onFocus={() => setFocus(r.name)}
-            onClick={() => setFocus(r.name)}
+            aria-label={`${r.name}: ${FITS[r.fit]}${r.rank ? `, number ${r.rank}` : ''}`}
+            onMouseEnter={() => onFocus(r.name)}
+            onFocus={() => onFocus(r.name)}
+            onClick={() => onFocus(r.name)}
           >
             {r.fit === 'strong' && <circle className="pulse" r={SIZE.strong} />}
-            <circle className="dot" r={SIZE[r.fit]} />
-            {!compact && r.rank && r.rank <= 3 && <text className="rank" dy="4">{r.rank}</text>}
+            <circle className="dot-c" r={SIZE[r.fit]} />
+            {!compact && r.rank && r.rank <= 3 && <text className="rank-t" dy="4">{r.rank}</text>}
             {!compact && <text className="label" y={BELOW.has(r.name) ? SIZE[r.fit] + 17 : -SIZE[r.fit] - 7}>{r.name}</text>}
           </g>
         ))}
       </svg>
-      {!compact && (
-        <figcaption>
-          <div className="legend">
-            {['strong', 'fair', 'weak', 'none'].map((f) => <span key={f} className={`key ${f}`}><i />{FITS[f]}</span>)}
-          </div>
-          <p className="readout" aria-live="polite">
-            {shown
-              ? <><b>{shown.name}</b>: {FITS[shown.fit].toLowerCase()}{shown.rank ? `, #${shown.rank} of ${rows.filter((r) => r.rank).length}` : ''}</>
-              : 'Tap a city for its reading.'}
-          </p>
-          <ol className="ranking">
-            {rows.map((r) => (
-              <li key={r.name} className={r.fit}>
-                <span>{r.rank ? `#${r.rank}` : '–'}</span> {r.name}
-              </li>
-            ))}
-          </ol>
-        </figcaption>
-      )}
     </figure>
   )
 }

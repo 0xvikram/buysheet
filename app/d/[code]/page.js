@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import DropCard from '../../../components/DropCard.js'
+import DropTable from '../../../components/app/DropTable.js'
 import Footer from '../../../components/Footer.js'
 import Nav from '../../../components/Nav.js'
 import { BRAND } from '../../../lib/brand.js'
@@ -24,19 +24,21 @@ export async function generateMetadata({ params }) {
 export default async function SharedDrop({ params }) {
   const drop = decodeDrop((await params).code)
   if (!drop) notFound()
+  const c = drop.sheet.counts
   return (
     <>
       <Nav />
       <main className="shared">
-        <p className="kicker">A {BRAND.name} drop</p>
-        <h1 className="display">{drop.title}</h1>
-        <DropCard drop={drop} interactive={false} />
-        <p className="mute small" style={{ marginTop: 14 }}>
-          Shared by the shop. The reasons for each brand stay with them; make your own drop to see yours.
-        </p>
-        <div className="ctas">
-          <Link href="/app" className="btn lime">Make your own drop</Link>
-          <Link href="/feed" className="btn">See the feed</Link>
+        <p className="kicker">Shared drop #{no(drop.number)}</p>
+        <h1>{drop.title}</h1>
+        <div className="meta" style={{ marginBottom: 18 }}>
+          <span><i className="dot stock" /> <b>{c.stock}</b> stock</span><span><i className="dot consider" /> <b>{c.consider}</b> consider</span><span><i className="dot skip" /> <b>{c.skip}</b> skip</span>
+          <span>Reasons stay private to the shop</span>
+        </div>
+        <DropTable drop={drop} />
+        <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginTop: 20 }}>
+          <Link href="/app/new" className="btn primary">Sort your own list, free</Link>
+          <Link href="/app/explore" className="btn">See sample shops</Link>
         </div>
       </main>
       <Footer />

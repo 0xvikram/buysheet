@@ -1,49 +1,68 @@
-import Link from 'next/link'
 import Footer from '../../components/Footer.js'
 import Nav from '../../components/Nav.js'
+import Plans from '../../components/Plans.js'
 import { BRAND } from '../../lib/brand.js'
 
-export const metadata = { title: 'Pricing' }
+export const metadata = { title: 'Pricing', description: `${BRAND.name} plans for independent shops, multi-store owners and brands.` }
+
+// Measured from recorded runs of the agent against Qloo's API (public/examples, Oct 2026).
+const COSTS = [
+  ['Sort a 23-brand supplier list', '28', 'One lookup per name and favourite, then two rankings'],
+  ['Market map for one brand', '12', 'One local reading per city, asked one at a time'],
+  ['What-if for another city', '1–2', 'Re-ranks the list you already have'],
+  ['Compare two brands', '2–4', 'Audience and traits for each'],
+  ['Discover new brands', '1–6', 'Looks up your favourites, then one search'],
+  ['Ask why a brand landed where it did', '0', 'Answered from data already fetched'],
+]
+
+const FAQ = [
+  ['Is it really free right now?', `Yes. ${BRAND.name} is in beta and every feature is free. The plans above are what we expect to charge once accounts launch.`],
+  ['Why charge shops at all?', 'Every drop runs on licensed taste data from Qloo’s API, and a single drop makes around 28 calls. The free plan covers a real order a month; paid plans cover shops that buy every week.'],
+  ['What does Qloo cost?', 'Qloo prices its commercial API by contract and doesn’t publish rates. Our plans are set so a shop never pays per call: the call budget is built into each plan.'],
+  ['Is my shop’s data shared with brands?', 'No. Brands will only ever see aggregate demand across many shops, never one shop’s lists, calls or orders.'],
+]
 
 export default function Pricing() {
   return (
     <>
       <Nav current="pricing" />
-      <main className="wrap section" style={{ borderTop: 0, paddingTop: 30 }}>
-        <p className="kicker">Pricing</p>
-        <h1 className="display" style={{ fontSize: 'clamp(2.6rem, 7vw, 5rem)', margin: '10px 0 14px' }}>
-          Free for shops. <span className="lime">Always.</span>
-        </h1>
-        <p className="lead mute" style={{ maxWidth: '60ch' }}>
-          Shops get the buying agent for free. Brands will pay to see where their brand fits: which cities and crowds want it,
-          built from what shops look up.
-        </p>
-        <div className="plans">
-          <div className="plan hot">
-            <h3>Shop</h3>
-            <div className="price">$0 <small>/ month</small></div>
-            <ul className="tick">
-              <li>Unlimited drops during the beta</li>
-              <li>Ask why, what-if, compare and discover</li>
-              <li>Every call shown with its evidence</li>
-              <li>Use it from your own AI assistant</li>
-            </ul>
-            <Link href="/app" className="btn">Start a drop</Link>
+      <main>
+        <section className="section" style={{ paddingBottom: 48 }}>
+          <div className="wrap">
+            <div className="section-head center">
+              <p className="kicker">Pricing</p>
+              <h2>Simple plans. Free while in beta.</h2>
+              <p>Start free. Upgrade when {BRAND.name} is part of every order. Brands pay to see where they fit, so shops never pay for that.</p>
+            </div>
+            <Plans />
           </div>
-          <div className="plan">
-            <h3>Brand</h3>
-            <div className="price">Soon</div>
-            <ul className="tick">
-              <li>See which cities and crowds fit your brand</li>
-              <li>Find the shops whose customers already love brands like yours</li>
-              <li>Aggregate demand only. No shop&apos;s private details, ever</li>
-            </ul>
-            <span className="btn" aria-disabled="true" style={{ opacity: 0.7, cursor: 'default' }}>Waitlist opens with accounts</span>
+        </section>
+
+        <section className="section">
+          <div className="wrap split" style={{ alignItems: 'start' }}>
+            <div>
+              <p className="kicker">What a plan pays for</p>
+              <h2>Real data, counted call by call.</h2>
+              <p className="mute" style={{ fontSize: 16, lineHeight: 1.6 }}>
+                Each drop is built from live calls to Qloo&apos;s taste API. Here is what each action uses, measured from real runs. Plans
+                include the calls, so you never see a meter.
+              </p>
+            </div>
+            <div className="table-wrap">
+              <table className="cost-table">
+                <thead><tr><th>Action</th><th>Qloo calls</th><th>Why</th></tr></thead>
+                <tbody>{COSTS.map(([a, n, w]) => <tr key={a}><td>{a}</td><td className="num">{n}</td><td className="mute">{w}</td></tr>)}</tbody>
+              </table>
+            </div>
           </div>
-        </div>
-        <p className="mute" style={{ fontSize: '0.86rem', marginTop: 24 }}>
-          {BRAND.name} is in beta and built for the Qloo Agentic Hackathon. Brand pricing will be set with the first brands on the waitlist.
-        </p>
+        </section>
+
+        <section className="section">
+          <div className="wrap">
+            <div className="section-head"><p className="kicker">Questions</p><h2>Good to know</h2></div>
+            <div className="faq">{FAQ.map(([q, a]) => <div key={q} className="card"><h3>{q}</h3><p>{a}</p></div>)}</div>
+          </div>
+        </section>
       </main>
       <Footer />
     </>
