@@ -62,3 +62,15 @@ test('the sample workspace is built from the real recorded example', () => {
   assert.ok(w.maps.length >= 1)
   assert.equal(initials(w.shop.name), 'MH')
 })
+
+test('the order draft uses the owner\'s final calls, not just the agent\'s', async () => {
+  const { orderDraft } = await import('../lib/workspace.js')
+  const rec = dropRecord(drop(1, [row('a', 'Filson', 'stock'), row('b', 'Baggu', 'skip'), row('c', 'Aesop', 'consider'), row('d', 'Rains', 'stock')]))
+  rec.calls = { b: 'stock', d: 'skip' }
+  const o = orderDraft(rec, { name: 'Mile High Goods', kind: 'Gift shop', city: 'Denver, Colorado' })
+  assert.deepEqual([o.stock, o.consider], [['Filson', 'Baggu'], ['Aesop']])
+  assert.match(o.body, /^Hi,\n\nI run Mile High Goods, a gift shop in Denver, Colorado\./)
+  assert.ok(!o.body.includes('Rains'))
+  assert.equal(orderDraft(rec, null, { withConsider: false }).consider.length, 0)
+  assert.equal(o.subject, 'Opening order for Mile High Goods')
+})

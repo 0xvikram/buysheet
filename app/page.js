@@ -14,6 +14,11 @@ import { BRAND } from '../lib/brand.js'
 import { TOOLS } from '../lib/mcp.js'
 import { MARKET, PROOF } from '../lib/stats.js'
 import denver from '../public/examples/denver.json'
+import austin from '../public/examples/austin.json'
+import portland from '../public/examples/portland.json'
+import nashville from '../public/examples/nashville.json'
+import losangeles from '../public/examples/losangeles.json'
+import { compareCrowds } from '../lib/crowds.js'
 
 const FEATURES = [
   ['drops', 'Sort any line sheet', 'Paste the brand column from any supplier or marketplace. Up to 40 brands, sorted in under a minute.'],
@@ -37,6 +42,11 @@ const MCP = `{
 const drop = denver.turns.flatMap((t) => t.replies).find((r) => r.type === 'drop').drop
 const pick = (g) => drop.sheet.rows.filter((r) => r.group === g).slice(0, 3)
 const DEMO = [0, 1, 2].flatMap((i) => [pick('stock')[i], pick('skip')[i], pick('consider')[i]]).filter(Boolean).map(({ name, group }) => ({ name, group }))
+// The same supplier list, sorted for four sample shops: what a bestseller list can't do.
+const firstDrop = (ex) => ex.turns.flatMap((t) => t.replies).find((r) => r.type === 'drop').drop
+const CROWDS = [['austin', 'Austin', austin], ['portland', 'Portland', portland], ['nashville', 'Nashville', nashville], ['losangeles', 'Los Angeles', losangeles]]
+const crowds = compareCrowds(CROWDS.map(([id, , ex]) => ({ id, drop: firstDrop(ex) })))
+const CALL = { stock: 'Stock', consider: 'Consider', skip: 'Skip' }
 const TICKER = [
   'Built on Qloo taste data', ...drop.sheet.rows.filter((r) => r.group === 'stock').map((r) => `${r.name} · stock`),
   'Checked against stockists in 12 US cities', ...drop.sheet.rows.filter((r) => r.group === 'skip').map((r) => `${r.name} · skip`),
@@ -61,7 +71,7 @@ export default function Home() {
               </p>
               <div className="ctas">
                 <Magnetic><Link href="/app/new" className="btn primary lg">Start free →</Link></Magnetic>
-                <Magnetic><Link href="/app/explore" className="btn glass lg">See sample shops</Link></Magnetic>
+                <Magnetic><Link href="/app/demo" className="btn glass lg">Try the live demo</Link></Magnetic>
               </div>
               <p className="note">Free while in beta · No card · US, UK, Europe, Japan and Australia</p>
             </HeroIn>
@@ -143,6 +153,37 @@ export default function Home() {
           </div>
         </section>
 
+        <section className="section" id="without">
+          <div className="wrap">
+            <Reveal className="section-head">
+              <p className="kicker">With Qloo vs without</p>
+              <h2>A bestseller list gives every shop the same answer.</h2>
+              <p>
+                We sorted one supplier list for four sample shops with different crowds. A popularity-only list would make the same
+                call for all four. With Qloo&apos;s taste data, <b style={{ color: 'var(--text)' }}><CountUp value={`${crowds.changed} of ${crowds.total}`} /></b> brands
+                get a different call depending on who shops there.
+              </p>
+            </Reveal>
+            <Reveal className="table-wrap glass">
+              <table className="table crowd-table">
+                <thead>
+                  <tr><th>Brand</th><th>Bestseller list <span className="faint">(every shop)</span></th>{CROWDS.map(([id, city, ex]) => <th key={id}>{city}<div className="faint" style={{ fontWeight: 400 }}>fans of {firstDrop(ex).loves.slice(0, 2).join(', ')}</div></th>)}</tr>
+                </thead>
+                <tbody>
+                  {crowds.brands.slice(0, 8).map((b) => (
+                    <tr key={b.name}>
+                      <td><div className="brand-cell"><span className="logo-sq">{b.name.slice(0, 2)}</span>{b.name}</div></td>
+                      <td>{b.generic ? <span className="badge plain">{CALL[b.generic]}</span> : '—'}</td>
+                      {CROWDS.map(([id]) => <td key={id}><span className={`badge ${b.calls[id]}`}>{CALL[b.calls[id]]}</span></td>)}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </Reveal>
+            <p className="faint" style={{ fontSize: 12.5, marginTop: 12 }}>Real Restocked output from Qloo&apos;s API for sample shops, recorded {austin.recordedOn}. Open any of them in <Link href="/app/explore">Sample shops</Link>.</p>
+          </div>
+        </section>
+
         <section className="section" id="proof">
           <div className="wrap">
             <Reveal className="section-head">
@@ -150,7 +191,7 @@ export default function Home() {
               <h2>We checked it against reality.</h2>
               <p>Before building, we compared Qloo&apos;s city rankings with where brands are actually stocked. Then we made the agent show every call it makes.</p>
             </Reveal>
-            <Spotlight className="grid-3">
+            <Spotlight className="grid-4">
               {PROOF.map((s, i) => (
                 <Reveal key={s.big} delay={i * 0.08} className="card stat glass spot"><b><CountUp value={s.big} /></b><span>{s.line}</span><small>{s.source}</small></Reveal>
               ))}

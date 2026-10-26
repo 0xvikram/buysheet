@@ -6,6 +6,7 @@ import { Suspense, useEffect, useState } from 'react'
 import AgentThread from '../../../../components/app/AgentThread.js'
 import DropTable from '../../../../components/app/DropTable.js'
 import Icon from '../../../../components/app/Icon.js'
+import OrderDraft from '../../../../components/app/OrderDraft.js'
 import MapView from '../../../../components/app/MapView.js'
 import Review from '../../../../components/app/Review.js'
 import CountUp from '../../../../components/motion/CountUp.js'
@@ -15,7 +16,7 @@ import { downloadCsv, shareDrop } from '../../../../components/app/actions.js'
 import { counts } from '../../../../lib/workspace.js'
 
 const pad = (n) => String(n).padStart(2, '0')
-const TABS = [['table', 'Table', 'table'], ['review', 'Review', 'cards'], ['map', 'Map', 'map'], ['work', 'Qloo calls', 'list']]
+const TABS = [['table', 'Table', 'table'], ['review', 'Review', 'cards'], ['order', 'Order', 'send'], ['map', 'Map', 'map'], ['work', 'Qloo calls', 'list']]
 
 function DropPage() {
   const { ws, ready, busy, ask, update, setToast } = useWorkspace()
@@ -103,7 +104,8 @@ function DropPage() {
           </div>
           <div className="tab-body">
             {tab === 'table' && <DropTable drop={drop} calls={calls} onCall={setCall} openName={search.get('brand')} />}
-            {tab === 'review' && <Review rows={drop.sheet.rows} calls={calls} onCall={setCall} onDone={<><button className="btn primary" onClick={() => downloadCsv(record)}><Icon name="download" size={14} /> Export my order</button><button className="btn" onClick={() => setTab('table')}>See the table</button></>} />}
+            {tab === 'review' && <Review rows={drop.sheet.rows} calls={calls} onCall={setCall} onDone={<><button className="btn primary" onClick={() => setTab('order')}>Draft the order</button><button className="btn" onClick={() => downloadCsv(record)}><Icon name="download" size={14} /> Export CSV</button><button className="btn" onClick={() => setTab('table')}>See the table</button></>} />}
+            {tab === 'order' && <OrderDraft record={record} shop={ws.shop} onToast={setToast} onCsv={() => downloadCsv(record)} />}
             {tab === 'map' && (
               <>
                 <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 14, alignItems: 'center' }}>

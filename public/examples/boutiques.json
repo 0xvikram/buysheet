@@ -1,0 +1,573 @@
+{
+ "recordedOn": "2026-10-26",
+ "checked": "2026-10-27",
+ "results": [
+  {
+   "name": "Cumberland Transit",
+   "city": "Nashville",
+   "url": "https://www.cumberlandtransit.com/pages/brands",
+   "loves": [
+    "Patagonia",
+    "YETI"
+   ],
+   "carried": 9,
+   "notCarried": 20,
+   "aucRestocked": 0.61,
+   "aucBestseller": 0.38,
+   "carriedStock": 33,
+   "carriedSkip": 11,
+   "notCarriedStock": 30,
+   "notCarriedSkip": 40,
+   "rows": [
+    {
+     "name": "Arc’teryx",
+     "group": "stock",
+     "generic": "stock",
+     "carried": true
+    },
+    {
+     "name": "Filson",
+     "group": "stock",
+     "generic": "consider",
+     "carried": false
+    },
+    {
+     "name": "Stanley",
+     "group": "stock",
+     "generic": "skip",
+     "carried": false
+    },
+    {
+     "name": "Cotopaxi",
+     "group": "stock",
+     "generic": "consider",
+     "carried": false
+    },
+    {
+     "name": "Topo Designs",
+     "group": "stock",
+     "generic": "consider",
+     "carried": false
+    },
+    {
+     "name": "Chaco",
+     "group": "stock",
+     "generic": "stock",
+     "carried": true
+    },
+    {
+     "name": "Benchmade",
+     "group": "stock",
+     "generic": "consider",
+     "carried": true
+    },
+    {
+     "name": "Rifle Paper Co.",
+     "group": "stock",
+     "generic": "stock",
+     "carried": false
+    },
+    {
+     "name": "Our Place",
+     "group": "stock",
+     "generic": "consider",
+     "carried": false
+    },
+    {
+     "name": "CamelBak",
+     "group": "consider",
+     "generic": "skip",
+     "carried": true
+    },
+    {
+     "name": "Darn Tough",
+     "group": "consider",
+     "generic": "skip",
+     "carried": true
+    },
+    {
+     "name": "ExOfficio",
+     "group": "consider",
+     "generic": "skip",
+     "carried": true
+    },
+    {
+     "name": "Herschel Supply Co",
+     "group": "consider",
+     "generic": "stock",
+     "carried": false
+    },
+    {
+     "name": "Birkenstock",
+     "group": "consider",
+     "generic": "stock",
+     "carried": true
+    },
+    {
+     "name": "Bellroy",
+     "group": "consider",
+     "generic": "consider",
+     "carried": false
+    },
+    {
+     "name": "Feetures!",
+     "group": "consider",
+     "generic": "skip",
+     "carried": true
+    },
+    {
+     "name": "Rains",
+     "group": "consider",
+     "generic": "consider",
+     "carried": false
+    },
+    {
+     "name": "Girlfriend Collective",
+     "group": "consider",
+     "generic": "consider",
+     "carried": false
+    },
+    {
+     "name": "Boy Smells",
+     "group": "consider",
+     "generic": "consider",
+     "carried": false
+    },
+    {
+     "name": "Glossier",
+     "group": "consider",
+     "generic": "stock",
+     "carried": false
+    },
+    {
+     "name": "Blundstone",
+     "group": "skip",
+     "generic": "skip",
+     "carried": true
+    },
+    {
+     "name": "Snow Peak",
+     "group": "skip",
+     "generic": "skip",
+     "carried": false
+    },
+    {
+     "name": "Moleskine",
+     "group": "skip",
+     "generic": "stock",
+     "carried": false
+    },
+    {
+     "name": "Otherland",
+     "group": "skip",
+     "generic": "skip",
+     "carried": false
+    },
+    {
+     "name": "Baggu",
+     "group": "skip",
+     "generic": "skip",
+     "carried": false
+    },
+    {
+     "name": "HAY",
+     "group": "skip",
+     "generic": "stock",
+     "carried": false
+    },
+    {
+     "name": "Aesop",
+     "group": "skip",
+     "generic": "stock",
+     "carried": false
+    },
+    {
+     "name": "Ganni",
+     "group": "skip",
+     "generic": "stock",
+     "carried": false
+    },
+    {
+     "name": "Paloma Wool",
+     "group": "skip",
+     "generic": "consider",
+     "carried": false
+    }
+   ]
+  },
+  {
+   "name": "Stag Provisions for Men",
+   "city": "Austin",
+   "url": "https://www.stagprovisions.com/pages/brands",
+   "loves": [
+    "Filson",
+    "Red Wing Heritage"
+   ],
+   "carried": 8,
+   "notCarried": 21,
+   "aucRestocked": 0.54,
+   "aucBestseller": 0.25,
+   "carriedStock": 38,
+   "carriedSkip": 25,
+   "notCarriedStock": 29,
+   "notCarriedSkip": 29,
+   "rows": [
+    {
+     "name": "Topo Designs",
+     "group": "stock",
+     "generic": "consider",
+     "carried": false
+    },
+    {
+     "name": "Stanley",
+     "group": "stock",
+     "generic": "skip",
+     "carried": false
+    },
+    {
+     "name": "CORRIDOR",
+     "group": "stock",
+     "generic": "skip",
+     "carried": true
+    },
+    {
+     "name": "EBBETS FIELD FLANNELS",
+     "group": "stock",
+     "generic": "skip",
+     "carried": true
+    },
+    {
+     "name": "Cotopaxi",
+     "group": "stock",
+     "generic": "consider",
+     "carried": false
+    },
+    {
+     "name": "Herschel Supply Co",
+     "group": "stock",
+     "generic": "stock",
+     "carried": false
+    },
+    {
+     "name": "Rains",
+     "group": "stock",
+     "generic": "consider",
+     "carried": false
+    },
+    {
+     "name": "GARRETT LEIGHT",
+     "group": "stock",
+     "generic": "consider",
+     "carried": true
+    },
+    {
+     "name": "Rifle Paper Co.",
+     "group": "stock",
+     "generic": "stock",
+     "carried": false
+    },
+    {
+     "name": "Snow Peak",
+     "group": "consider",
+     "generic": "skip",
+     "carried": false
+    },
+    {
+     "name": "Fjällräven",
+     "group": "consider",
+     "generic": "stock",
+     "carried": false
+    },
+    {
+     "name": "ALEX MILL",
+     "group": "consider",
+     "generic": "skip",
+     "carried": true
+    },
+    {
+     "name": "BEAMS+",
+     "group": "consider",
+     "generic": "consider",
+     "carried": true
+    },
+    {
+     "name": "Baggu",
+     "group": "consider",
+     "generic": "skip",
+     "carried": false
+    },
+    {
+     "name": "HAY",
+     "group": "consider",
+     "generic": "stock",
+     "carried": false
+    },
+    {
+     "name": "Aesop",
+     "group": "consider",
+     "generic": "stock",
+     "carried": false
+    },
+    {
+     "name": "Boy Smells",
+     "group": "consider",
+     "generic": "consider",
+     "carried": false
+    },
+    {
+     "name": "Girlfriend Collective",
+     "group": "consider",
+     "generic": "consider",
+     "carried": false
+    },
+    {
+     "name": "D.S & DURGA",
+     "group": "consider",
+     "generic": "skip",
+     "carried": true
+    },
+    {
+     "name": "Our Place",
+     "group": "consider",
+     "generic": "consider",
+     "carried": false
+    },
+    {
+     "name": "Glossier",
+     "group": "consider",
+     "generic": "stock",
+     "carried": false
+    },
+    {
+     "name": "Bellroy",
+     "group": "skip",
+     "generic": "consider",
+     "carried": false
+    },
+    {
+     "name": "BLUNDSTONE",
+     "group": "skip",
+     "generic": "skip",
+     "carried": true
+    },
+    {
+     "name": "Moleskine",
+     "group": "skip",
+     "generic": "stock",
+     "carried": false
+    },
+    {
+     "name": "BIRKENSTOCK",
+     "group": "skip",
+     "generic": "stock",
+     "carried": true
+    },
+    {
+     "name": "Hydro Flask",
+     "group": "skip",
+     "generic": "stock",
+     "carried": false
+    },
+    {
+     "name": "Otherland",
+     "group": "skip",
+     "generic": "skip",
+     "carried": false
+    },
+    {
+     "name": "Paloma Wool",
+     "group": "skip",
+     "generic": "consider",
+     "carried": false
+    },
+    {
+     "name": "Ganni",
+     "group": "skip",
+     "generic": "stock",
+     "carried": false
+    }
+   ]
+  },
+  {
+   "name": "Pipe and Row",
+   "city": "Seattle",
+   "url": "https://pipeandrow.com/pages/brands",
+   "loves": [
+    "Ganni",
+    "Paloma Wool"
+   ],
+   "carried": 6,
+   "notCarried": 21,
+   "aucRestocked": 0.35,
+   "aucBestseller": 0.21,
+   "carriedStock": 17,
+   "carriedSkip": 50,
+   "notCarriedStock": 43,
+   "notCarriedSkip": 29,
+   "rows": [
+    {
+     "name": "Baggu",
+     "group": "stock",
+     "generic": "skip",
+     "carried": false
+    },
+    {
+     "name": "Aesop",
+     "group": "stock",
+     "generic": "stock",
+     "carried": false
+    },
+    {
+     "name": "HAY",
+     "group": "stock",
+     "generic": "stock",
+     "carried": false
+    },
+    {
+     "name": "Girlfriend Collective",
+     "group": "stock",
+     "generic": "consider",
+     "carried": false
+    },
+    {
+     "name": "Glossier",
+     "group": "stock",
+     "generic": "stock",
+     "carried": false
+    },
+    {
+     "name": "Otherland",
+     "group": "stock",
+     "generic": "skip",
+     "carried": false
+    },
+    {
+     "name": "Rifle Paper Co.",
+     "group": "stock",
+     "generic": "stock",
+     "carried": false
+    },
+    {
+     "name": "ALO YOGA",
+     "group": "stock",
+     "generic": "stock",
+     "carried": true
+    },
+    {
+     "name": "Our Place",
+     "group": "stock",
+     "generic": "consider",
+     "carried": false
+    },
+    {
+     "name": "Filson",
+     "group": "stock",
+     "generic": "consider",
+     "carried": false
+    },
+    {
+     "name": "AGOLDE",
+     "group": "consider",
+     "generic": "skip",
+     "carried": true
+    },
+    {
+     "name": "Rains",
+     "group": "consider",
+     "generic": "consider",
+     "carried": false
+    },
+    {
+     "name": "DEDCOOL",
+     "group": "consider",
+     "generic": "skip",
+     "carried": true
+    },
+    {
+     "name": "Fjällräven",
+     "group": "consider",
+     "generic": "stock",
+     "carried": false
+    },
+    {
+     "name": "Snow Peak",
+     "group": "consider",
+     "generic": "skip",
+     "carried": false
+    },
+    {
+     "name": "Topo Designs",
+     "group": "consider",
+     "generic": "consider",
+     "carried": false
+    },
+    {
+     "name": "Herschel Supply Co",
+     "group": "consider",
+     "generic": "stock",
+     "carried": false
+    },
+    {
+     "name": "Cotopaxi",
+     "group": "consider",
+     "generic": "consider",
+     "carried": false
+    },
+    {
+     "name": "B-LOW THE BELT",
+     "group": "skip",
+     "generic": "skip",
+     "carried": true
+    },
+    {
+     "name": "Blundstone",
+     "group": "skip",
+     "generic": "skip",
+     "carried": false
+    },
+    {
+     "name": "Birkenstock",
+     "group": "skip",
+     "generic": "stock",
+     "carried": false
+    },
+    {
+     "name": "Moleskine",
+     "group": "skip",
+     "generic": "consider",
+     "carried": false
+    },
+    {
+     "name": "FIELD NOTES",
+     "group": "skip",
+     "generic": "skip",
+     "carried": true
+    },
+    {
+     "name": "Bellroy",
+     "group": "skip",
+     "generic": "consider",
+     "carried": false
+    },
+    {
+     "name": "Stanley",
+     "group": "skip",
+     "generic": "consider",
+     "carried": false
+    },
+    {
+     "name": "BRUNETTE THE LABEL",
+     "group": "skip",
+     "generic": "skip",
+     "carried": true
+    },
+    {
+     "name": "Hydro Flask",
+     "group": "skip",
+     "generic": "stock",
+     "carried": false
+    }
+   ]
+  }
+ ]
+}
