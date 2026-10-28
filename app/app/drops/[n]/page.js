@@ -8,8 +8,8 @@ import DropTable from '../../../../components/app/DropTable.js'
 import Icon from '../../../../components/app/Icon.js'
 import OrderDraft from '../../../../components/app/OrderDraft.js'
 import MapView from '../../../../components/app/MapView.js'
+import Tour, { TOUR_KEY } from '../../../../components/app/Tour.js'
 import Review from '../../../../components/app/Review.js'
-import CountUp from '../../../../components/motion/CountUp.js'
 import { Topbar } from '../../../../components/app/Shell.js'
 import { useWorkspace } from '../../../../components/app/Workspace.js'
 import { downloadCsv, shareDrop } from '../../../../components/app/actions.js'
@@ -25,6 +25,15 @@ function DropPage() {
   const router = useRouter()
   const [tab, setTab] = useState(search.get('tab') || 'table')
   const [mapBrand, setMapBrand] = useState('')
+  const [touring, setTouring] = useState(false)
+
+  // the sample shop opens with a guided tour, once per browser
+  useEffect(() => {
+    if (!ready || !ws.sample) return
+    let done = false
+    try { done = localStorage.getItem(TOUR_KEY) === '1' } catch { done = false }
+    if (!done) setTouring(true)
+  }, [ready, ws.sample])
 
   const record = params.n === 'latest'
     ? [...ws.drops].reverse().find((d) => !d.drop.whatIf) || ws.drops.at(-1)
@@ -83,19 +92,20 @@ function DropPage() {
               </div>
             </div>
             <div className="acts">
+              {ws.sample && <button className="btn" onClick={() => setTouring(true)}>Take the tour</button>}
               <button className="btn" onClick={() => downloadCsv(record)}><Icon name="download" size={14} /> Export CSV</button>
               <button className="btn primary" onClick={() => setTab('review')}>Review {total - reviewed > 0 ? total - reviewed : ''}</button>
             </div>
           </div>
           <div className="kpis">
-            <div className="card kpi"><small><i className="dot stock" />Stock</small><b><CountUp value={c.stock} duration={0.9} /></b><span>Strong taste and local fit</span></div>
-            <div className="card kpi"><small><i className="dot consider" />Consider</small><b><CountUp value={c.consider} duration={0.9} /></b><span>Mixed signals</span></div>
-            <div className="card kpi"><small><i className="dot skip" />Skip</small><b><CountUp value={c.skip} duration={0.9} /></b><span>Weak fit for this crowd</span></div>
+            <div className="card kpi"><small><i className="dot stock" />Stock</small><b>{c.stock}</b><span>Strong taste and local fit</span></div>
+            <div className="card kpi"><small><i className="dot consider" />Consider</small><b>{c.consider}</b><span>Mixed signals</span></div>
+            <div className="card kpi"><small><i className="dot skip" />Skip</small><b>{c.skip}</b><span>Weak fit for this crowd</span></div>
             <div className="card kpi"><small>vs a bestseller list</small><b>{flips} flip{flips === 1 ? '' : 's'}</b><span>{flips ? drop.baseline.flips.slice(0, 3).map((f) => f.name).join(', ') : 'Your crowd is close to average'}</span></div>
           </div>
           <div className="tabs" role="tablist">
             {TABS.map(([id, label, icon]) => (
-              <button key={id} role="tab" aria-selected={tab === id} onClick={() => setTab(id)}>
+              <button key={id} role="tab" aria-selected={tab === id} onClick={() => setTab(id)} data-tour={`tab-${id}`}>
                 <Icon name={icon} size={14} />{label}
                 {id === 'review' && <span className="n">{reviewed}/{total}</span>}
                 {id === 'work' && <span className="n">{record.trace?.length || 0}</span>}
@@ -136,6 +146,7 @@ function DropPage() {
         </div>
         <AgentThread stateFor={(s) => ({ ...s, drop })} />
       </div>
+      {touring && <Tour onTab={setTab} onClose={() => setTouring(false)} />}
     </>
   )
 }

@@ -43,27 +43,27 @@ export default function DropTable({ drop, calls, onCall, city, openName }) {
         </div>
       </div>
       <div className="table-wrap">
-        <table className="table">
+        <table className="table drop-table">
           <thead>
             <tr>
               <th>Brand</th>
               <th>Agent</th>
-              <th>Taste fit</th>
+              <th data-tour="ranks">Taste fit</th>
               <th>Local fit{where ? ` · ${where}` : ''}</th>
-              <th>Bestseller list</th>
-              {onCall && <th>Your call</th>}
+              <th data-tour="bestseller">Bestseller list</th>
+              {onCall && <th data-tour="call">Your call</th>}
               <th aria-label="Details" />
             </tr>
           </thead>
           <tbody>
-            {shown.map((r) => {
+            {shown.map((r, n) => {
               const p = positions(r)
               const g = generic[r.id]
               const isOpen = open === r.id
               const mine = calls?.[r.id]
               return (
                 <Fragment key={r.id}>
-                  <tr className={`row${isOpen ? ' open' : ''}`} onClick={() => setOpen(isOpen ? null : r.id)} aria-expanded={isOpen}>
+                  <tr className={`row${isOpen ? ' open' : ''}`} onClick={() => setOpen(isOpen ? null : r.id)} aria-expanded={isOpen} data-tour={n === 0 ? 'row' : undefined}>
                     <td><div className="brand-cell"><span className="logo-sq">{r.name.slice(0, 2)}</span>{r.name}</div></td>
                     <td><span className={`badge ${r.group}`}>{GROUPS[r.group]}</span></td>
                     <td><Rank p={p.taste} /></td>

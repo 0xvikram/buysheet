@@ -98,7 +98,7 @@ export default function AgentThread({ full = false, stateFor, title = 'Ask Resto
       {suggestions.length > 0 && !busy && (
         <div className="sugg">{suggestions.slice(0, 5).map((c) => <button key={c} className="chip" onClick={() => send(c)}>{c}</button>)}</div>
       )}
-      <form className="composer" onSubmit={(e) => { e.preventDefault(); send(draft) }}>
+      <form className="composer" data-tour="agent" onSubmit={(e) => { e.preventDefault(); send(draft) }}>
         <label htmlFor={full ? 'say-full' : 'say'} className="sr-only">Message the agent</label>
         <textarea
           id={full ? 'say-full' : 'say'}

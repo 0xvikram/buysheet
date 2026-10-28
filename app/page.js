@@ -5,6 +5,7 @@ import CountUp from '../components/motion/CountUp.js'
 import { Float, HeroIn, HeroTitle, LiveShapes } from '../components/motion/Hero.js'
 import Magnetic from '../components/motion/Magnetic.js'
 import Reveal from '../components/motion/Reveal.js'
+import StatViz from '../components/motion/StatViz.js'
 import SortDemo from '../components/motion/SortDemo.js'
 import Spotlight from '../components/motion/Spotlight.js'
 import Tilt from '../components/motion/Tilt.js'
@@ -12,7 +13,7 @@ import TypeCode from '../components/motion/TypeCode.js'
 import Nav from '../components/Nav.js'
 import { BRAND } from '../lib/brand.js'
 import { TOOLS } from '../lib/mcp.js'
-import { MARKET, PROOF } from '../lib/stats.js'
+import { COMPARABLES, COST, MARKET, PROOF, SIZING, TAILWINDS } from '../lib/stats.js'
 import denver from '../public/examples/denver.json'
 import austin from '../public/examples/austin.json'
 import portland from '../public/examples/portland.json'
@@ -104,10 +105,17 @@ export default function Home() {
               <h2>Every order is a bet with your cash.</h2>
               <p>Independent shops commit money to stock months ahead, on instinct and a rep&apos;s word. Sales history can&apos;t help with a brand you&apos;ve never carried, and a bestseller list knows nothing about your crowd.</p>
             </Reveal>
+            <Spotlight className="grid-2 cost-row">
+              {COST.map((s, i) => (
+                <Reveal key={s.big} delay={i * 0.08} className={`card stat spot cost${i === 0 ? ' solid' : ' glass'}`}>
+                  <b style={{ '--len': s.big.length }}><CountUp value={s.big} /></b><span>{s.line}</span><StatViz viz={s.viz} /><small><a href={s.href} target="_blank" rel="noreferrer">{s.source}</a></small>
+                </Reveal>
+              ))}
+            </Spotlight>
             <Spotlight className="grid-4">
               {MARKET.map((s, i) => (
                 <Reveal key={s.big} delay={i * 0.08} className="card stat glass spot">
-                  <b><CountUp value={s.big} /></b><span>{s.line}</span><small><a href={s.href} target="_blank" rel="noreferrer">{s.source}</a></small>
+                  <b style={{ '--len': s.big.length }}>{s.big}</b><span>{s.line}</span><small><a href={s.href} target="_blank" rel="noreferrer">{s.source}</a></small>
                 </Reveal>
               ))}
             </Spotlight>
@@ -163,6 +171,7 @@ export default function Home() {
                 call for all four. With Qloo&apos;s taste data, <b style={{ color: 'var(--text)' }}><CountUp value={`${crowds.changed} of ${crowds.total}`} /></b> brands
                 get a different call depending on who shops there.
               </p>
+              <StatViz viz={{ type: 'dots', of: crowds.total, lit: crowds.changed }} />
             </Reveal>
             <Reveal className="table-wrap glass">
               <table className="table crowd-table">
@@ -180,6 +189,7 @@ export default function Home() {
                 </tbody>
               </table>
             </Reveal>
+            <p className="swipe-hint-sm faint">Swipe the table to see all four shops →</p>
             <p className="faint" style={{ fontSize: 12.5, marginTop: 12 }}>Real Restocked output from Qloo&apos;s API for sample shops, recorded {austin.recordedOn}. Open any of them in <Link href="/app/explore">Sample shops</Link>.</p>
           </div>
         </section>
@@ -193,9 +203,49 @@ export default function Home() {
             </Reveal>
             <Spotlight className="grid-4">
               {PROOF.map((s, i) => (
-                <Reveal key={s.big} delay={i * 0.08} className="card stat glass spot"><b><CountUp value={s.big} /></b><span>{s.line}</span><small>{s.source}</small></Reveal>
+                <Reveal key={s.big} delay={i * 0.08} className="card stat glass spot"><b style={{ '--len': s.big.length }}>{s.big}</b><span>{s.line}</span><small>{s.source}</small></Reveal>
               ))}
             </Spotlight>
+          </div>
+        </section>
+
+
+        <section className="section" id="opportunity">
+          <div className="wrap">
+            <Reveal className="section-head">
+              <p className="kicker">Why this becomes a big company</p>
+              <h2>Millions of shops. No buying tool built for them.</h2>
+              <p>Independent retail is growing, AI agents are arriving in commerce, and the companies that serve small shops are already worth billions. None of them helps a shop decide what its own crowd will buy. That is the gap Restocked fills, with Qloo&apos;s taste data underneath.</p>
+            </Reveal>
+            <Reveal><p className="kicker" style={{ marginBottom: 12 }}>Tailwinds</p></Reveal>
+            <Spotlight className="grid-4">
+              {TAILWINDS.map((s, i) => (
+                <Reveal key={s.big} delay={i * 0.08} className="card stat glass spot"><b style={{ '--len': s.big.length }}>{s.big}</b><span>{s.line}</span><StatViz viz={s.viz} /><small><a href={s.href} target="_blank" rel="noreferrer">{s.source}</a></small></Reveal>
+              ))}
+            </Spotlight>
+            <div className="opp-row">
+              <div>
+                <Reveal><p className="kicker" style={{ margin: '36px 0 12px' }}>The category already builds big companies</p></Reveal>
+                <Spotlight className="comp-list">
+                  {COMPARABLES.map((s, i) => (
+                    <Reveal key={s.big} delay={i * 0.08} className="card glass spot comp"><b style={{ '--len': s.big.length }}>{s.big}</b><div><span>{s.line}</span><small><a href={s.href} target="_blank" rel="noreferrer">{s.source}</a></small></div></Reveal>
+                  ))}
+                </Spotlight>
+              </div>
+              <Reveal delay={0.1} className="card sizing solid">
+                <p className="kicker" style={{ margin: 0 }}>The math, on one plan</p>
+                <div className="sizing-big" style={{ '--len': 9 }}><CountUp value={SIZING.shops.toLocaleString('en-US')} /></div>
+                <p className="mute" style={{ margin: '2px 0 16px' }}>small retailers in the US and EU (figures above)</p>
+                {SIZING.at.map((a) => (
+                  <div key={a.pct} className="sizing-line">
+                    <span>{a.pct}% on the Shop plan</span>
+                    <b style={{ '--len': 6 }}><CountUp value={`$${(a.arr / 1e6).toFixed(1)}M`} /></b>
+                    <small>{a.shops.toLocaleString('en-US')} shops × ${SIZING.plan}/yr</small>
+                  </div>
+                ))}
+                <p className="faint" style={{ fontSize: 12, margin: '14px 0 0' }}>Recurring revenue before the brand side, which pays to see where it fits. Simple arithmetic, not a forecast.</p>
+              </Reveal>
+            </div>
           </div>
         </section>
 
