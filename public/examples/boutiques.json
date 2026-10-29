@@ -193,7 +193,18 @@
      "generic": "consider",
      "carried": false
     }
-   ]
+   ],
+   "aucLLM": 0.75,
+   "v2": {
+    "loves": [
+     "Patagonia",
+     "YETI",
+     "Hydro Flask",
+     "Fjällräven"
+    ],
+    "scored": 29,
+    "auc": 0.81
+   }
   },
   {
    "name": "Stag Provisions for Men",
@@ -386,7 +397,18 @@
      "generic": "stock",
      "carried": false
     }
-   ]
+   ],
+   "aucLLM": 0.9,
+   "v2": {
+    "loves": [
+     "Filson",
+     "Red Wing Heritage",
+     "Pendleton",
+     "Imogene + Willie"
+    ],
+    "scored": 29,
+    "auc": 0.62
+   }
   },
   {
    "name": "Pipe and Row",
@@ -567,7 +589,27 @@
      "generic": "stock",
      "carried": false
     }
-   ]
+   ],
+   "aucLLM": 0.71,
+   "v2": {
+    "loves": [
+     "Ganni",
+     "Paloma Wool",
+     "Boy  Smells"
+    ],
+    "scored": 27,
+    "auc": 0.43
+   }
   }
- ]
+ ],
+ "llm": {
+  "model": "Claude (Anthropic), answering from its own knowledge with no Qloo data, no web and no tools",
+  "asked": "2026-10-29"
+ },
+ "mean": {
+  "restocked": 0.5,
+  "llm": 0.79,
+  "bestseller": 0.28,
+  "restockedV2": 0.62
+ }
 }

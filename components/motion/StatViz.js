@@ -9,7 +9,7 @@ export default function StatViz({ viz }) {
   const ref = useRef(null)
   const on = useInView(ref, { once: true, margin: '-40px' })
   if (!viz) return null
-  const cls = `viz viz-${viz.type}${on ? ' on' : ''}`
+  const cls = `viz viz--${viz.type}${on ? ' on' : ''}`
   if (viz.type === 'split') {
     const share = (viz.part / viz.total) * 100
     return (

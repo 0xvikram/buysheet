@@ -42,7 +42,7 @@ export function Sidebar() {
   return (
     <aside className="sidebar" aria-label="App">
       <div className="sb-top">
-        <Link href="/" className="wordmark" aria-label={`${BRAND.name} home`}><Mark size={24} />{BRAND.name}</Link>
+        <Link href="/" className="wordmark" aria-label={`${BRAND.name} home, powered by Qloo`}><Mark size={24} /><span className="wm-stack">{BRAND.name}<small>powered by Qloo</small></span></Link>
       </div>
       <Link href={shop ? '/app/settings' : '/app/new'} className="sb-ws">
         <span className="ws-av">{shop ? initials(shop.name) : '+'}</span>

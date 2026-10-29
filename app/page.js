@@ -5,6 +5,7 @@ import CountUp from '../components/motion/CountUp.js'
 import { Float, HeroIn, HeroTitle, LiveShapes } from '../components/motion/Hero.js'
 import Magnetic from '../components/motion/Magnetic.js'
 import Reveal from '../components/motion/Reveal.js'
+import DemoVideo from '../components/motion/DemoVideo.js'
 import StatViz from '../components/motion/StatViz.js'
 import SortDemo from '../components/motion/SortDemo.js'
 import Spotlight from '../components/motion/Spotlight.js'
@@ -81,8 +82,7 @@ export default function Home() {
               <LiveShapes />
               <Tilt className="shot glass" max={4}>
                 <div className="bar" aria-hidden="true"><i /><i /><i /></div>
-                <img className="only-light" src="/product-light.png" width="2160" height="1350" alt="A Restocked drop: 23 brands for a Denver gift shop sorted into stock, consider and skip, with taste and local ranks and the agent beside it" />
-                <img className="only-dark" src="/product-dark.png" width="2160" height="1350" alt="" />
+                <DemoVideo />
               </Tilt>
               <Float className="float glass f1"><b>Stanley → Stock</b>1st of 23 for Patagonia fans.<br /><i className="pk">⇄ bestseller list says skip</i></Float>
               <Float className="float glass f2" delay={1.4}><b>Filson fits Seattle</b>#1 of 12 US cities on Qloo.<br /><i className="lm">Market map</i></Float>

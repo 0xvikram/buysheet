@@ -10,7 +10,7 @@ export default function Nav({ current }) {
     <header className="site-nav" id="top">
       <Ambient />
       <div className="wrap">
-        <Link href="/" className="wordmark" aria-label={`${BRAND.name} home`}><Mark size={26} />{BRAND.name}</Link>
+        <Link href="/" className="wordmark" aria-label={`${BRAND.name} home, powered by Qloo`}><Mark size={26} /><span className="wm-stack">{BRAND.name}<small>powered by Qloo</small></span></Link>
         <nav aria-label="Main">
           {link('/#product', 'Product', 'product')}
           {link('/#how', 'How it works', 'how')}

@@ -1,0 +1,10 @@
+{
+  "model": "Claude (Anthropic), answering from its own knowledge with no Qloo data, no web and no tools",
+  "asked": "2026-10-29",
+  "prompt": "For each shop: its city, two brands its customers love, and the supplier list (names normalised to one style, alphabetical). Sort every brand into stock, consider or skip, roughly a third each.",
+  "shops": {
+    "Cumberland Transit": {"stock":["Arc'teryx","Benchmade","Blundstone","Chaco","Cotopaxi","Darn Tough","Filson","Snow Peak","Stanley","Topo Designs"],"consider":["Baggu","Bellroy","Birkenstock","Camelbak","Exofficio","Feetures","Girlfriend Collective","Herschel Supply Co","Moleskine","Rains"],"skip":["Aesop","Boy Smells","Ganni","Glossier","Hay","Otherland","Our Place","Paloma Wool","Rifle Paper Co."]},
+    "Stag Provisions for Men": {"stock":["Alex Mill","Beams Plus","Blundstone","Corridor","D.S. & Durga","Ebbets Field Flannels","Fjällräven","Garrett Leight","Snow Peak","Stanley"],"consider":["Aesop","Bellroy","Birkenstock","Cotopaxi","Herschel Supply Co","Hydro Flask","Moleskine","Rains","Topo Designs"],"skip":["Baggu","Boy Smells","Ganni","Girlfriend Collective","Glossier","Hay","Otherland","Our Place","Paloma Wool","Rifle Paper Co."]},
+    "Pipe and Row": {"stock":["Aesop","Agolde","B-Low The Belt","Baggu","Brunette The Label","Dedcool","Girlfriend Collective","Glossier","Hay"],"consider":["Alo Yoga","Birkenstock","Blundstone","Moleskine","Otherland","Our Place","Rains","Rifle Paper Co.","Stanley"],"skip":["Bellroy","Cotopaxi","Field Notes","Filson","Fjällräven","Herschel Supply Co","Hydro Flask","Snow Peak","Topo Designs"]}
+  }
+}

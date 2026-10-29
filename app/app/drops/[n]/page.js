@@ -13,10 +13,11 @@ import Review from '../../../../components/app/Review.js'
 import { Topbar } from '../../../../components/app/Shell.js'
 import { useWorkspace } from '../../../../components/app/Workspace.js'
 import { downloadCsv, shareDrop } from '../../../../components/app/actions.js'
+import { agentSteps } from '../../../../lib/steps.js'
 import { counts } from '../../../../lib/workspace.js'
 
 const pad = (n) => String(n).padStart(2, '0')
-const TABS = [['table', 'Table', 'table'], ['review', 'Review', 'cards'], ['order', 'Order', 'send'], ['map', 'Map', 'map'], ['work', 'Qloo calls', 'list']]
+const TABS = [['table', 'Table', 'table'], ['review', 'Review', 'cards'], ['order', 'Order', 'send'], ['map', 'Map', 'map'], ['work', 'How it decided', 'list']]
 
 function DropPage() {
   const { ws, ready, busy, ask, update, setToast } = useWorkspace()
@@ -129,6 +130,18 @@ function DropPage() {
               </>
             )}
             {tab === 'work' && (
+              <>
+              <div className="card" style={{ marginBottom: 16 }}>
+                <div className="card-h"><h2>How the agent decided</h2><span className="right faint" style={{ fontSize: 12 }}>Step by step, from this run</span></div>
+                <ol className="steps-log">
+                  {agentSteps(record).map((st, i) => (
+                    <li key={i} className={st.kind}>
+                      <span className="sl-n">{i + 1}</span>
+                      <div><b>{st.title}</b><p>{st.detail}</p></div>
+                    </li>
+                  ))}
+                </ol>
+              </div>
               <div className="card">
                 <div className="card-h"><h2>Every Qloo call behind this drop</h2><span className="right faint" style={{ fontSize: 12 }}>Nothing is guessed</span></div>
                 <ol className="work">
@@ -141,6 +154,7 @@ function DropPage() {
                   ))}
                 </ol>
               </div>
+              </>
             )}
           </div>
         </div>

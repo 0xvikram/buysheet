@@ -60,7 +60,7 @@ shop, recorded from Qloo's API.
 | **Technological implementation** | Seven Qloo capabilities used together: search, insights by taste, insights by city, explainability, demographics, audience compare and similar brands. Taste and place are asked as separate questions and combined by position ([`lib/grade.js`](lib/grade.js)). A paced, allow-listed Qloo client ([`lib/qloo.js`](lib/qloo.js)). An MCP server with 5 tools. 66 tests. |
 | **Design** | A full workspace: set up the shop → paste a line sheet → watch the agent run → drop table → review → order draft → share link or CSV. Light and dark themes; works on phones. |
 | **Potential impact** | 585,925 US retailers with fewer than 20 staff, selling $915B a year, commit cash to stock months ahead on instinct. The cost of inventory is their #2 problem out of 75 (NFIB). |
-| **Quality of the idea** | Qloo on the *supply* side of retail: deciding what a shop buys, not what to recommend to a shopper. Checked against real stockist lists and three real shops ([below](#does-it-hold-up)). |
+| **Quality of the idea** | Qloo on the *supply* side of retail: deciding what a shop buys, not what to recommend to a shopper. Checked against real stockist lists, three real shops and an LLM alone, with every result published ([below](#does-it-hold-up)). |
 | **"Would it work without Qloo?"** | No. One supplier list sorted for four shops: a bestseller list gives all four the same answer; with Qloo, **21 of 23** brands get a different call depending on the crowd. |
 
 ---
@@ -318,16 +318,45 @@ brand effects:
 
 That last, weaker number is why the drop shows **groups**, not a precise order.
 
-### Against three real shops
+### Against three real shops, and against an LLM alone
 
 We took the brands three real independent shops list on their own public brand pages
 ([`data/boutiques.json`](data/boutiques.json), copied 27 Oct 2026). For each shop we mixed brands it carries with
-brands from our sample list that it doesn't. We gave Restocked the shop's city and two of its own favourites (never
-scored), then measured how often a carried brand was ranked above a not-carried one. This is the AUC: 0.5 is chance,
-higher is better. Re-run it with `node scripts/boutiques.mjs`.
+brands from our sample list that it doesn't. We gave Restocked the shop's city and its favourite brands (never scored),
+then measured how often a carried brand was ranked above a not-carried one. This is the AUC: 0.5 is chance, higher is
+better.
 
-| Shop | Carried vs not | Restocked | Bestseller list |
-|---|---|---|---|
+We ran the same test on **an LLM alone**: Claude, with no Qloo data, no web and no tools, given each shop's city, two
+favourites and the same list, with names normalised so capital letters gave nothing away
+([`data/llm-baseline.json`](data/llm-baseline.json)). Version 1 of Restocked lost to it, so we made two changes,
+[declared in writing before re-running](data/method-v2.md): score with Qloo's full ranking instead of three groups,
+and give Qloo all of the shop's favourites. Every number is below, including the ones that don't flatter us.
+
+| Shop | Restocked v1 | Restocked v2 | LLM alone | Bestseller list |
+|---|---|---|---|---|
+| [Cumberland Transit](https://www.cumberlandtransit.com/pages/brands), Nashville · outdoor | 0.61 | **0.81** | 0.75 | 0.38 |
+| [Stag Provisions](https://www.stagprovisions.com/pages/brands), Austin · menswear | 0.54 | 0.62 | **0.90** | 0.25 |
+| [Pipe and Row](https://pipeandrow.com/pages/brands), Seattle · womenswear | 0.35 | 0.43 | **0.71** | 0.21 |
+| **Average** | 0.50 | 0.62 | **0.79** | 0.28 |
+
+**What this says, plainly:**
+- Restocked beats a popularity-only list at all three shops.
+- Version 2 beats the LLM alone at the outdoor shop, but loses at the other two. On average, the LLM alone is ahead on this test.
+- This test mostly asks "is this the kind of brand this kind of shop carries?" A language model is good at that from general knowledge, and it may also simply know these real shops.
+- Qloo is missing many of the small labels these shops carry, and the LLM was given two favourites where v2 had four.
+- With 6 to 9 carried brands per shop, it's a small test.
+
+Where Restocked is built to add what an LLM can't show, it does:
+- **Every call is traceable** to a Qloo answer.
+- **Brands Qloo doesn't know are never guessed.**
+- **The answer changes city by city:** across our four sample shops, 21 of 23 calls change.
+- **That city signal checks out** against real stockist lists (r = +0.32 above).
+
+The honest next step is a hybrid: let a language model read the shop, and let Qloo ground and rank its picks.
+
+Re-run everything with `node scripts/boutiques.mjs`, `node scripts/llm-baseline.mjs` and `node scripts/boutiques-v2.mjs`.
+
+---|---|---|---|
 | [Cumberland Transit](https://www.cumberlandtransit.com/pages/brands), Nashville · outdoor | 9 vs 20 | **0.61** | 0.38 |
 | [Stag Provisions](https://www.stagprovisions.com/pages/brands), Austin · menswear | 8 vs 21 | **0.54** | 0.25 |
 | [Pipe and Row](https://pipeandrow.com/pages/brands), Seattle · womenswear | 6 vs 21 | 0.35 | 0.21 |
