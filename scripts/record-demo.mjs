@@ -143,7 +143,8 @@ await wait(t)
 // 7. map
 t = await say('7', 'See where a brand sells best across 12 US cities')
 await point('[role=tab]:has-text("Map")', { click: true })
-await p.selectOption('select[aria-label="Brand to map"]', { label: 'Filson' })
+await point('.dd-inline .dd-btn', { click: true })
+await point('.dd-inline [role=option]:has-text("Filson")', { click: true })
 await wait(t + 400)
 
 // 8. ask the agent
@@ -152,7 +153,7 @@ await point('[role=tab]:has-text("Table")', { click: true })
 await point('.composer textarea', { click: true })
 await p.keyboard.type('Why skip Baggu?', { delay: 55 })
 await p.keyboard.press('Enter')
-await p.waitForFunction(() => document.querySelectorAll('.thread .m-bot').length && !document.querySelector('.typing'), null, { timeout: 15000 })
+await p.waitForFunction(() => document.querySelectorAll('.thread .m-group').length > 1 && !document.querySelector('.typing'), null, { timeout: 15000 })
 await wait(Math.max(2600, t))
 
 // end card

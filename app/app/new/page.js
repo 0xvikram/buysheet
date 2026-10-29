@@ -4,6 +4,9 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import Icon from '../../../components/app/Icon.js'
+import Select from '../../../components/app/Select.js'
+import CityPicker from '../../../components/app/CityPicker.js'
+import LovesPicker from '../../../components/app/LovesPicker.js'
 import { Topbar } from '../../../components/app/Shell.js'
 import { useWorkspace } from '../../../components/app/Workspace.js'
 import { SHOP_KINDS, setupMessage } from '../../../lib/workspace.js'
@@ -29,7 +32,8 @@ export default function NewDrop() {
   const { ws, ready, busy, ask, update } = useWorkspace()
   const router = useRouter()
   const [step, setStep] = useState(0)
-  const [shop, setShop] = useState({ name: '', city: '', kind: SHOP_KINDS[0], loves: '' })
+  const [shop, setShop] = useState({ name: '', city: '', kind: SHOP_KINDS[0], loves: [] })
+  const [cityStatus, setCityStatus] = useState('idle')
   const [order, setOrder] = useState({ name: '', supplier: '', list: '' })
   const [log, setLog] = useState([])
   const [question, setQuestion] = useState(null)
@@ -38,14 +42,14 @@ export default function NewDrop() {
   useEffect(() => {
     if (!ready) return
     if (ws.shop) {
-      setShop({ ...ws.shop, loves: (ws.shop.loves || []).join(', ') })
+      setShop({ ...ws.shop, loves: ws.shop.loves || [] })
       setStep(1)
     }
     if (ws.basket.length) setOrder((o) => ({ ...o, list: ws.basket.join('\n') }))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ready])
 
-  const loves = shop.loves.split(/,|\n/).map((s) => s.trim()).filter(Boolean).slice(0, 5)
+  const loves = shop.loves.slice(0, 5)
   const count = names(order.list).length
   const nextNumber = Math.max(0, ...ws.drops.map((d) => d.number)) + 1
 
@@ -94,11 +98,11 @@ export default function NewDrop() {
             <div className="card-b form-grid">
               <div className="form-grid two">
                 <div className="field"><label htmlFor="shop-name">Shop name</label><input id="shop-name" className="input" required maxLength={60} value={shop.name} onChange={(e) => setShop({ ...shop, name: e.target.value })} placeholder="Mile High Goods" /></div>
-                <div className="field"><label htmlFor="shop-kind">Type of shop</label><select id="shop-kind" className="select" value={shop.kind} onChange={(e) => setShop({ ...shop, kind: e.target.value })}>{SHOP_KINDS.map((k) => <option key={k}>{k}</option>)}</select></div>
+                <div className="field"><label htmlFor="shop-kind">Type of shop</label><Select id="shop-kind" label="Type of shop" value={shop.kind} options={SHOP_KINDS} onChange={(k) => setShop({ ...shop, kind: k })} /></div>
               </div>
-              <div className="field"><label htmlFor="shop-city">Where is it?</label><input id="shop-city" className="input" required maxLength={80} value={shop.city} onChange={(e) => setShop({ ...shop, city: e.target.value })} placeholder="Denver, Colorado" /><small>City and state or country. Works for the US, UK, Europe, Japan and Australia.</small></div>
-              <div className="field"><label htmlFor="shop-loves">What do your customers already love?</label><input id="shop-loves" className="input" maxLength={200} value={shop.loves} onChange={(e) => setShop({ ...shop, loves: e.target.value })} placeholder="Patagonia, Carhartt, Tyler Childers" /><small>Up to 5 brands, musicians, shows or films, separated by commas. This is the strongest signal.</small></div>
-              <div style={{ display: 'flex', justifyContent: 'flex-end' }}><button className="btn primary" disabled={!shop.name.trim() || !shop.city.trim()}>Continue</button></div>
+              <div className="field"><label htmlFor="shop-city">Where is it?</label><CityPicker id="shop-city" value={shop.city} onChange={(city) => setShop((x) => ({ ...x, city }))} onStatus={setCityStatus} /></div>
+              <div className="field"><label htmlFor="shop-loves">What do your customers already love?</label><LovesPicker id="shop-loves" values={shop.loves} onChange={(loves) => setShop((x) => ({ ...x, loves }))} /></div>
+              <div style={{ display: 'flex', justifyContent: 'flex-end' }}><button className="btn primary" disabled={!shop.name.trim() || !shop.city.trim() || cityStatus === 'no' || cityStatus === 'checking'}>Continue</button></div>
             </div>
           </form>
         )}

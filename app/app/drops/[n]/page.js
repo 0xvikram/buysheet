@@ -9,6 +9,7 @@ import Icon from '../../../../components/app/Icon.js'
 import OrderDraft from '../../../../components/app/OrderDraft.js'
 import MapView from '../../../../components/app/MapView.js'
 import Tour, { TOUR_KEY } from '../../../../components/app/Tour.js'
+import Select from '../../../../components/app/Select.js'
 import Review from '../../../../components/app/Review.js'
 import { Topbar } from '../../../../components/app/Shell.js'
 import { useWorkspace } from '../../../../components/app/Workspace.js'
@@ -121,9 +122,7 @@ function DropPage() {
               <>
                 <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 14, alignItems: 'center' }}>
                   <span className="mute" style={{ fontSize: 13 }}>Map a brand from this drop:</span>
-                  <select className="select" style={{ width: 'auto' }} value={picked} onChange={(e) => setMapBrand(e.target.value)} aria-label="Brand to map">
-                    {drop.sheet.rows.map((r) => <option key={r.id}>{r.name}</option>)}
-                  </select>
+                  <Select className="dd-inline" label="Brand to map" value={picked} options={drop.sheet.rows.map((r) => r.name)} onChange={setMapBrand} />
                   {!map && <button className="btn primary sm" disabled={busy} onClick={() => ask(`Where does ${picked} fit?`)}>{busy ? 'Reading 12 cities…' : 'Map it'}</button>}
                 </div>
                 {map ? <MapView map={map} /> : <div className="card empty"><div className="empty-ic"><Icon name="map" size={20} /></div><h2>Where does {picked} fit?</h2><p>Reads {picked}&apos;s local standing in 12 US cities on Qloo, one at a time. Takes about 10 seconds.</p></div>}

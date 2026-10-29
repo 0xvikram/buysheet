@@ -823,3 +823,71 @@ input[type='checkbox'] { width: 18px; height: 18px; accent-color: var(--stock-do
 @media (max-width: 560px) { .wordmark-xl { font-size: calc((100vw - 48px) / 5.4); } }
 /* app pages sit centred in the space beside the sidebar, not pinned to its edge */
 .page { margin-left: auto; margin-right: auto; }
+
+/* ---------- chat panel ---------- */
+.agent-panel .thread { padding: 18px 16px 24px; gap: 16px; -webkit-mask-image: linear-gradient(transparent 0, #000 14px, #000 calc(100% - 22px), transparent); mask-image: linear-gradient(transparent 0, #000 14px, #000 calc(100% - 22px), transparent); }
+.m-me { max-width: 85%; font-size: 13.5px; line-height: 1.45; border-radius: 14px 14px 4px 14px; padding: 9px 13px; }
+.m-list { display: flex; flex-direction: column; gap: 8px; align-items: flex-end; max-width: 92%; }
+.m-prose { display: block; white-space: normal; }
+.m-chip { display: inline-flex; align-items: center; gap: 6px; height: 26px; padding: 0 10px; border-radius: 999px; border: 0; background: rgba(11, 11, 11, 0.14); color: inherit; font: 600 12px var(--sans); }
+[data-theme='light'] .m-chip { background: rgba(212, 255, 63, 0.25); }
+.m-brands { display: block; white-space: normal; font-size: 12.5px; font-weight: 500; opacity: 0.85; text-align: right; }
+.m-group { display: flex; flex-direction: column; gap: 6px; max-width: 100%; }
+.m-group .who { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--faint); }
+.m-bubble { background: var(--sunk); border: 1px solid var(--line); border-radius: 4px 14px 14px 14px; padding: 11px 13px; display: flex; flex-direction: column; gap: 9px; font-size: 13.5px; line-height: 1.5; overflow-wrap: anywhere; }
+.m-bubble p { margin: 0; }
+.m-bubble p.err { color: var(--skip); }
+.m-bubble p.ask { border-left: 3px solid var(--consider-dot); padding: 6px 0 6px 10px; background: var(--consider-bg); border-radius: 0 8px 8px 0; color: var(--text); }
+.m-bubble .m-card { background: var(--panel); margin: 2px 0; }
+.typing { padding-left: 2px; }
+.dots { display: inline-flex; gap: 4px; }
+.dots i { width: 6px; height: 6px; border-radius: 50%; background: var(--brand); animation: dot 1s infinite ease-in-out; }
+.dots i:nth-child(2) { animation-delay: 0.15s; } .dots i:nth-child(3) { animation-delay: 0.3s; }
+@keyframes dot { 0%, 80%, 100% { transform: scale(0.5); opacity: 0.4; } 40% { transform: scale(1); opacity: 1; } }
+.agent-panel .sugg { border-top: 1px solid var(--line); padding: 10px 12px 8px; margin: 0; gap: 6px; max-height: 92px; overflow-y: auto; }
+.agent-panel .sugg .chip { height: 28px; font-size: 12px; padding: 0 10px; border-radius: 999px; }
+.agent-panel .sugg .chip:hover { border-color: var(--brand); color: var(--text); }
+.composer { margin: 0 12px 12px; }
+.composer .send:disabled { opacity: 1; background: var(--chip); color: var(--faint); }
+.ap-head small { white-space: nowrap; }
+
+/* custom dropdown */
+.dd { position: relative; }
+.dd-inline { display: inline-block; min-width: 200px; }
+.dd-btn { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 10px; height: 40px; padding: 0 12px; border-radius: 9px; border: 1px solid var(--line); background: var(--panel); color: var(--text); text-align: left; font-weight: 500; }
+.dd-btn:hover { border-color: var(--faint); }
+.dd.open .dd-btn, .dd-btn:focus-visible { border-color: var(--text); box-shadow: 0 0 0 3px var(--hover); outline: none; }
+.dd-chev { color: var(--faint); display: grid; transition: transform 0.15s; }
+.dd.open .dd-chev { color: var(--text); }
+.dd-list { position: absolute; z-index: 60; left: 0; right: 0; top: calc(100% + 6px); margin: 0; padding: 6px; list-style: none; max-height: 280px; overflow-y: auto; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; box-shadow: var(--shadow); animation: ddin 0.14s ease-out; }
+@keyframes ddin { from { opacity: 0; transform: translateY(-4px); } }
+.dd-list li { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 8px 10px; border-radius: 8px; cursor: pointer; font-size: 13.5px; color: var(--mute); }
+.dd-list li.active { background: var(--hover); color: var(--text); }
+.dd-list li[aria-selected='true'] { color: var(--text); font-weight: 600; }
+.dd-list li[aria-selected='true'] svg { color: var(--stock-dot); }
+[data-theme='light'] .dd-list li[aria-selected='true'] svg { color: var(--ink); }
+
+/* city and loves pickers */
+.combo { position: relative; }
+.combo-field { display: flex; align-items: center; gap: 8px; min-height: 42px; padding: 4px 10px; border: 1px solid var(--line); border-radius: 10px; background: var(--panel); color: var(--faint); cursor: text; }
+.combo-field:focus-within { border-color: var(--text); box-shadow: 0 0 0 3px var(--hover); }
+.combo-field.good { border-color: var(--stock-dot); }
+.combo-field.bad { border-color: var(--skip-dot); }
+.combo-input { flex: 1; min-width: 120px; border: 0; background: none; color: var(--text); height: 32px; padding: 0 2px; font-size: 14px; }
+.combo-input:focus { outline: none; }
+.combo-ok { width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; background: var(--stock-bg); color: var(--stock); flex: none; }
+.combo .dd-list { top: calc(100% + 6px); }
+.combo .dd-list li { gap: 12px; }
+.dd-about { display: inline; font-size: 12px; }
+.combo-note { margin: 6px 0 0; font-size: 12px; color: var(--faint); }
+.combo-note.ok { color: var(--stock); }
+.combo-note.no { color: var(--skip); font-weight: 500; }
+.pills-field { flex-wrap: wrap; padding: 6px 8px; }
+.pill { display: inline-flex; align-items: center; gap: 4px; height: 28px; padding: 0 4px 0 11px; border-radius: 999px; background: var(--primary); color: var(--on-primary); font-size: 13px; font-weight: 600; animation: pillin 0.16s ease-out; }
+@keyframes pillin { from { transform: scale(0.85); opacity: 0; } }
+.pill button { width: 22px; height: 22px; border-radius: 50%; border: 0; display: grid; place-items: center; background: rgba(11, 11, 11, 0.14); color: inherit; }
+[data-theme='light'] .pill button { background: rgba(212, 255, 63, 0.22); }
+.pill button:hover { background: rgba(11, 11, 11, 0.3); }
+.quick-picks { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.quick-picks .chip { height: 28px; border-radius: 999px; font-size: 12px; }
+@media (max-width: 560px) { .dd-about { display: none; } }

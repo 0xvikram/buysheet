@@ -53,6 +53,35 @@ function Reply({ r, onAsk, onBasket }) {
   return null
 }
 
+/** A message from the owner. A pasted brand list shows as a summary that opens on click. */
+function Mine({ text }) {
+  const [open, setOpen] = useState(false)
+  const lines = text.split(/\n+/).map((l) => l.trim()).filter(Boolean)
+  if (lines.length < 4) return <div className="m-me">{text}</div>
+  const prose = /[a-z]{3,}\s[a-z]{2,}\s/i.test(lines[0]) && lines[0].length > 30 ? lines[0] : ''
+  const brands = prose ? lines.slice(1) : lines
+  return (
+    <div className="m-me m-list">
+      {prose && <span className="m-prose">{prose}</span>}
+      <button type="button" className="m-chip" onClick={() => setOpen(!open)} aria-expanded={open}>
+        <Icon name="list" size={13} /> {brands.length} brands pasted <span aria-hidden="true">{open ? '▴' : '▾'}</span>
+      </button>
+      {open && <span className="m-brands">{brands.join(' · ')}</span>}
+    </div>
+  )
+}
+
+/** Groups consecutive bot messages so each answer reads as one bubble. */
+function groups(messages) {
+  const out = []
+  for (const m of messages) {
+    const last = out.at(-1)
+    if (m.from !== 'me' && last && last.from === 'bot') last.items.push(m)
+    else out.push(m.from === 'me' ? { from: 'me', text: m.text } : { from: 'bot', items: [m] })
+  }
+  return out
+}
+
 /** The agent conversation. `stateFor()` can adjust the state sent (a drop page pins its own drop). */
 export default function AgentThread({ full = false, stateFor, title = 'Ask Restocked' }) {
   const { ws, busy, ask, update, setToast } = useWorkspace()
@@ -60,8 +89,10 @@ export default function AgentThread({ full = false, stateFor, title = 'Ask Resto
   const log = useRef(null)
   const { messages, chips } = ws.agent
 
+  const first = useRef(true)
   useEffect(() => {
-    log.current?.scrollTo({ top: log.current.scrollHeight, behavior: 'smooth' })
+    log.current?.scrollTo({ top: log.current.scrollHeight, behavior: first.current ? 'auto' : 'smooth' })
+    first.current = false
   }, [messages.length, busy])
 
   const send = (text) => {
@@ -81,19 +112,28 @@ export default function AgentThread({ full = false, stateFor, title = 'Ask Resto
       {!full && <div className="ap-head">{title}<span className="live" aria-hidden="true" /><small>Agent · Qloo data</small></div>}
       <div className="thread" ref={log} aria-live="polite">
         {!messages.length && (
-          <div className="m-bot">
+          <div className="m-group">
             <div className="who"><Mark size={14} /> Restocked</div>
-            I&apos;m your buying agent. Ask why a brand landed where it did, what changes in another city, where a brand fits, who buys it, or for new brands your crowd would like.
+            <div className="m-bubble"><p>I&apos;m your buying agent. Ask why a brand landed where it did, what changes in another city, where a brand fits, who buys it, or for new brands your crowd would like.</p></div>
           </div>
         )}
-        {messages.map((m, i) => (
-          m.from === 'me'
-            ? <div key={i} className={`m-me${m.text.length > 220 ? ' long' : ''}`}>{m.text}</div>
-            : m.reply
-              ? <Reply key={i} r={m.reply} onAsk={send} onBasket={toBasket} />
-              : <div key={i} className={`m-bot${m.err ? ' err' : ''}`}>{(i === 0 || messages[i - 1].from === 'me') && <div className="who"><Mark size={14} /> Restocked</div>}{m.text}</div>
+        {groups(messages).map((g, i) => (
+          g.from === 'me'
+            ? <Mine key={i} text={g.text} />
+            : (
+              <div key={i} className="m-group">
+                <div className="who"><Mark size={14} /> Restocked</div>
+                <div className="m-bubble">
+                  {g.items.map((m, j) => (
+                    m.reply
+                      ? <Reply key={j} r={m.reply} onAsk={send} onBasket={toBasket} />
+                      : <p key={j} className={`${m.err ? 'err' : ''}${/^Quick check:/.test(m.text) ? ' ask' : ''}`}>{m.text}</p>
+                  ))}
+                </div>
+              </div>
+            )
         ))}
-        {busy && <div className="typing"><span className="spinner" /> Asking Qloo…</div>}
+        {busy && <div className="typing"><span className="dots" aria-hidden="true"><i /><i /><i /></span> Asking Qloo…</div>}
       </div>
       {suggestions.length > 0 && !busy && (
         <div className="sugg">{suggestions.slice(0, 5).map((c) => <button key={c} className="chip" onClick={() => send(c)}>{c}</button>)}</div>
