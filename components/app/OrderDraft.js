@@ -52,7 +52,7 @@ export default function OrderDraft({ record, shop, onToast, onCsv }) {
             <input type="checkbox" checked={withConsider} onChange={(e) => setWithConsider(e.target.checked)} /> Ask about the brands I&apos;m still considering
           </label>
           {withConsider && <div className="rv-group"><h3><span className="dot consider" />Asking about <span className="faint">{draft.consider.length}</span></h3><p>{draft.consider.map((n) => <span key={n}>{n}</span>)}</p></div>}
-          <p className="mute" style={{ fontSize: 12.5, marginTop: 16 }}>Change a call in the Table or Review tab and the draft updates.</p>
+          <p className="mute" style={{ fontSize: 12.5, marginTop: 16 }}>Change a call in the Table and the draft updates.</p>
         </div>
       </div>
     </div>

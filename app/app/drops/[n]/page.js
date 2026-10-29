@@ -10,7 +10,6 @@ import OrderDraft from '../../../../components/app/OrderDraft.js'
 import MapView from '../../../../components/app/MapView.js'
 import Tour, { TOUR_KEY } from '../../../../components/app/Tour.js'
 import Select from '../../../../components/app/Select.js'
-import Review from '../../../../components/app/Review.js'
 import { Topbar } from '../../../../components/app/Shell.js'
 import { useWorkspace } from '../../../../components/app/Workspace.js'
 import { downloadCsv, shareDrop } from '../../../../components/app/actions.js'
@@ -18,7 +17,7 @@ import { agentSteps } from '../../../../lib/steps.js'
 import { counts } from '../../../../lib/workspace.js'
 
 const pad = (n) => String(n).padStart(2, '0')
-const TABS = [['table', 'Table', 'table'], ['review', 'Review', 'cards'], ['order', 'Order', 'send'], ['map', 'Map', 'map'], ['work', 'How it decided', 'list']]
+const TABS = [['table', 'Table', 'table'], ['order', 'Order', 'send'], ['map', 'Map', 'map'], ['work', 'How it decided', 'list']]
 
 function DropPage() {
   const { ws, ready, busy, ask, update, setToast } = useWorkspace()
@@ -96,7 +95,7 @@ function DropPage() {
             <div className="acts">
               {ws.sample && <button className="btn" onClick={() => setTouring(true)}>Take the tour</button>}
               <button className="btn" onClick={() => downloadCsv(record)}><Icon name="download" size={14} /> Export CSV</button>
-              <button className="btn primary" onClick={() => setTab('review')}>Review {total - reviewed > 0 ? total - reviewed : ''}</button>
+              <button className="btn primary" onClick={() => setTab('order')}>Draft the order</button>
             </div>
           </div>
           <div className="kpis">
@@ -109,14 +108,12 @@ function DropPage() {
             {TABS.map(([id, label, icon]) => (
               <button key={id} role="tab" aria-selected={tab === id} onClick={() => setTab(id)} data-tour={`tab-${id}`}>
                 <Icon name={icon} size={14} />{label}
-                {id === 'review' && <span className="n">{reviewed}/{total}</span>}
                 {id === 'work' && <span className="n">{record.trace?.length || 0}</span>}
               </button>
             ))}
           </div>
           <div className="tab-body">
             {tab === 'table' && <DropTable drop={drop} calls={calls} onCall={setCall} openName={search.get('brand')} />}
-            {tab === 'review' && <Review rows={drop.sheet.rows} calls={calls} onCall={setCall} onDone={<><button className="btn primary" onClick={() => setTab('order')}>Draft the order</button><button className="btn" onClick={() => downloadCsv(record)}><Icon name="download" size={14} /> Export CSV</button><button className="btn" onClick={() => setTab('table')}>See the table</button></>} />}
             {tab === 'order' && <OrderDraft record={record} shop={ws.shop} onToast={setToast} onCsv={() => downloadCsv(record)} />}
             {tab === 'map' && (
               <>

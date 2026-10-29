@@ -52,7 +52,7 @@ export default function DemoVideo() {
         preload="none"
         width="1280"
         height="800"
-        aria-label="A 48-second guided demo: pasting a supplier list, the sorted drop with reasons, a bestseller-list flip, review, the order draft, the market map and asking the agent"
+        aria-label="A 48-second guided demo: pasting a supplier list, the sorted drop with reasons, a bestseller-list flip, the owner’s own calls, the order draft, the market map and asking the agent"
         onPlay={() => setPlaying(true)}
         onPause={() => setPlaying(false)}
         onTimeUpdate={(e) => setProgress(e.currentTarget.currentTime / (e.currentTarget.duration || 1))}

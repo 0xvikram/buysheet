@@ -68,7 +68,7 @@ export default function Overview() {
         <div className="kpis">
           <div className="card kpi"><small>Drops</small><b>{o.drops}</b><span>{o.brands} brands sorted</span></div>
           <div className="card kpi"><small>Reviewed by you</small><b>{o.reviewed}<span style={{ fontSize: 14, color: 'var(--faint)' }}> / {o.brands}</span></b><span>Brands you made the call on</span></div>
-          <div className="card kpi"><small>Agreement with agent</small><b>{o.agreement === null ? '—' : `${o.agreement}%`}</b><span>{o.agreement === null ? 'Review a drop to see it' : 'Of the calls you made'}</span></div>
+          <div className="card kpi"><small>Agreement with agent</small><b>{o.agreement === null ? '—' : `${o.agreement}%`}</b><span>{o.agreement === null ? 'Make your calls in a drop to see it' : 'Of the calls you made'}</span></div>
           <div className="card kpi"><small>Bestseller flips</small><b>{o.flips}</b><span>Where your crowd differs</span></div>
         </div>
         <div className="ov-grid">
@@ -96,7 +96,7 @@ export default function Overview() {
               <div className="card-h"><h2>Quick actions</h2></div>
               <div className="quick">
                 <Link href="/app/new"><b>New drop</b><span>Paste a supplier list</span></Link>
-                <Link href="/app/drops/latest?tab=review"><b>Review</b><span>Make your calls fast</span></Link>
+                <Link href="/app/drops/latest?tab=order"><b>Draft an order</b><span>From your latest drop</span></Link>
                 <Link href="/app/discover"><b>Discover</b><span>Brands your crowd loves</span></Link>
                 <Link href="/app/agent"><b>Ask the agent</b><span>Why, what-if, compare</span></Link>
               </div>

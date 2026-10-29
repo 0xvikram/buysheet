@@ -126,12 +126,12 @@ t = await say('4', 'Where a bestseller list gets it wrong for this crowd')
 await point('.flip.yes >> nth=0')
 await wait(t)
 
-// 5. review
-t = await say('5', 'Review in seconds: → stock · ← skip · ↑ consider')
-await point('[role=tab]:has-text("Review")', { click: true })
-await wait(700)
-for (const k of ['ArrowRight', 'ArrowLeft', 'ArrowUp', 'ArrowRight']) { await p.keyboard.press(k); await wait(650) }
-await wait(Math.max(300, t - 2600))
+// 5. the owner's call
+t = await say('5', 'You make the final call on every brand')
+await point('.call button.skip >> nth=1', { click: true })
+await wait(500)
+await point('.call button.stock >> nth=8', { click: true })
+await wait(Math.max(600, t - 1800))
 
 // 6. order
 t = await say('6', 'Your calls become the order to the supplier')

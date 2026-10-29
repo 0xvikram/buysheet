@@ -49,7 +49,7 @@ evidence behind each call.
 shop, recorded from Qloo's API.
 
 1. **Click any row** in the table to see why the brand landed there.
-2. **Review** goes brand by brand (← skip · ↑ consider · → stock) so the owner can overrule the agent.
+2. **Your call:** tick, question or cross on any row to overrule the agent.
 3. **Order** turns the final calls into an email to the supplier's rep, sent from the owner's own mail app.
 4. **Map** shows where a brand is strongest across 12 US cities.
 5. **Qloo calls** lists every request behind the drop.
@@ -58,7 +58,7 @@ shop, recorded from Qloo's API.
 | Criterion | Where to see it |
 |---|---|
 | **Technological implementation** | Seven Qloo capabilities used together: search, insights by taste, insights by city, explainability, demographics, audience compare and similar brands. Taste and place are asked as separate questions and combined by position ([`lib/grade.js`](lib/grade.js)). A paced, allow-listed Qloo client ([`lib/qloo.js`](lib/qloo.js)). An MCP server with 5 tools. 66 tests. |
-| **Design** | A full workspace: set up the shop → paste a line sheet → watch the agent run → drop table → review → order draft → share link or CSV. Light and dark themes; works on phones. |
+| **Design** | A full workspace: set up the shop → paste a line sheet → watch the agent run → drop table → your calls → order draft → share link or CSV. Light and dark themes; works on phones. |
 | **Potential impact** | 585,925 US retailers with fewer than 20 staff, selling $915B a year, commit cash to stock months ahead on instinct. The cost of inventory is their #2 problem out of 75 (NFIB). |
 | **Quality of the idea** | Qloo on the *supply* side of retail: deciding what a shop buys, not what to recommend to a shopper. Checked against real stockist lists, three real shops and an LLM alone, with every result published ([below](#does-it-hold-up)). |
 | **"Would it work without Qloo?"** | No. One supplier list sorted for four shops: a bestseller list gives all four the same answer; with Qloo, **21 of 23** brands get a different call depending on the crowd. |
@@ -112,7 +112,7 @@ flowchart LR
     C -- "unclear name" --> Q["❓ Asks the owner<br/>'Kapital the brand or the bank?'"]
     Q --> C
     C --> D["📊 Drop<br/>stock · consider · skip<br/>with reasons"]
-    D --> E["✋ Review<br/>owner makes the final calls"]
+    D --> E["✋ Your call<br/>owner makes the final calls"]
     E --> F["✉️ Order draft<br/>owner approves and sends"]
     D --> G["💬 Follow-ups<br/>why · what-if city · who buys ·<br/>compare · similar · market map"]
 
@@ -124,7 +124,7 @@ flowchart LR
 | Feature | What the owner gets |
 |---|---|
 | **Drop** | Every brand on the list as stock, consider or skip, with its taste rank, local rank and what a bestseller list would have said |
-| **Review** | Keyboard and swipe review; overrule the agent anywhere |
+| **Your call** | Tick, question or cross on any brand to overrule the agent |
 | **Order** | A supplier email built from the final calls, plus a CSV order sheet |
 | **Market map** | Where one brand is strongest across 12 US cities |
 | **Discover** | Brands fans of your customers' favourites also love, minus the names everyone already carries |
@@ -199,7 +199,7 @@ sequenceDiagram
     Qloo-->>Agent: list ranked for this city
     Note over Agent: grade by thirds → stock / consider / skip<br/>compare with a popularity-only list
     Agent-->>App: Drop #01 + reasons + every Qloo call made
-    App-->>Owner: table · review · order · map
+    App-->>Owner: table · your calls · order · map
 ```
 
 A 23-brand drop takes about **28 Qloo calls**: one lookup per name and favourite, then two rankings. A market map takes
@@ -430,7 +430,7 @@ lib/
   workspace.js            drops, calls, overview totals, CSV, order draft
   mcp.js · mcp-tools.js   JSON-RPC handling and tool wording
   share.js                share links that carry the drop
-components/               app shell, drop table, review, order draft, city map, motion
+components/               app shell, drop table, order draft, city map, motion
 scripts/
   examples.mjs            records the sample shops from the live API
   boutiques.mjs           the real-shop test

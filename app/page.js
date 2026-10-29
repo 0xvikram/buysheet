@@ -25,7 +25,7 @@ import { compareCrowds } from '../lib/crowds.js'
 const FEATURES = [
   ['drops', 'Sort any line sheet', 'Paste the brand column from any supplier or marketplace. Up to 40 brands, sorted in under a minute.'],
   ['agent', 'Every call explained', 'Taste rank, local rank and the favourite each brand links to. Ask why, and it answers from the data.'],
-  ['cards', 'Review in seconds', 'Go brand by brand with the keyboard or a swipe. Overrule the agent anywhere, then export your order.'],
+  ['check', 'You make the final call', 'Tick, question or cross on any brand to overrule the agent. Your calls become the order to the supplier.'],
   ['map', 'Market map', 'See where any brand is strongest across 12 US cities before you pitch it, stock it or open near it.'],
   ['discover', 'Discover new brands', 'What else fans of your customers’ favourites love, minus the names everyone already carries.'],
   ['bolt', 'What-if, any city', 'Thinking about a second shop? Re-run the same list for another city and see what moves.'],
@@ -152,7 +152,7 @@ export default function Home() {
             </Reveal>
             <Reveal><SortDemo rows={DEMO} /></Reveal>
             <div className="steps-row">
-              {[['Set up your shop once', 'Where it is, and the brands, musicians or shows your regulars love.'], ['Paste a supplier list', 'Any line sheet. Unclear names are confirmed with you.'], ['Get your drop', 'Stock, consider, skip, with reasons. Review, ask follow-ups, export.']].map(([h, p], i) => (
+              {[['Set up your shop once', 'Where it is, and the brands, musicians or shows your regulars love.'], ['Paste a supplier list', 'Any line sheet. Unclear names are confirmed with you.'], ['Get your drop', 'Stock, consider, skip, with reasons. Make your calls, ask follow-ups, send the order.']].map(([h, p], i) => (
                 <Reveal key={h} delay={i * 0.1} className="step-item">
                   <span className="step-n">{String(i + 1).padStart(2, '0')}</span><b>{h}</b><p>{p}</p>
                 </Reveal>
