@@ -1,292 +1,278 @@
-'use client'
+import Link from 'next/link'
+import Icon from '../components/app/Icon.js'
+import Footer from '../components/Footer.js'
+import CountUp from '../components/motion/CountUp.js'
+import { Float, HeroIn, HeroTitle, LiveShapes } from '../components/motion/Hero.js'
+import Magnetic from '../components/motion/Magnetic.js'
+import Reveal from '../components/motion/Reveal.js'
+import DemoVideo from '../components/motion/DemoVideo.js'
+import StatViz from '../components/motion/StatViz.js'
+import SortDemo from '../components/motion/SortDemo.js'
+import Spotlight from '../components/motion/Spotlight.js'
+import Tilt from '../components/motion/Tilt.js'
+import TypeCode from '../components/motion/TypeCode.js'
+import Nav from '../components/Nav.js'
+import { BRAND } from '../lib/brand.js'
+import { TOOLS } from '../lib/mcp.js'
+import { COMPARABLES, COST, MARKET, PROOF, SIZING, TAILWINDS } from '../lib/stats.js'
+import denver from '../public/examples/denver.json'
+import austin from '../public/examples/austin.json'
+import portland from '../public/examples/portland.json'
+import nashville from '../public/examples/nashville.json'
+import losangeles from '../public/examples/losangeles.json'
+import { compareCrowds } from '../lib/crowds.js'
 
-import { useState } from 'react'
-import { parseList } from '../lib/match.js'
-
-const GROUPS = [
-  ['stock', 'Stock', 'Strongest fit for your shop'],
-  ['consider', 'Consider', 'Middling fit, or mixed evidence'],
-  ['skip', 'Skip', 'Weakest fit on this list'],
-  ['nosignal', 'No signal', 'Qloo returned nothing; not a verdict'],
+const FEATURES = [
+  ['drops', 'Sort any line sheet', 'Paste the brand column from any supplier or marketplace. Up to 40 brands, sorted in under a minute.'],
+  ['agent', 'Every call explained', 'Taste rank, local rank and the favourite each brand links to. Ask why, and it answers from the data.'],
+  ['check', 'You make the final call', 'Tick, question or cross on any brand to overrule the agent. Your calls become the order to the supplier.'],
+  ['map', 'Market map', 'See where any brand is strongest across 12 US cities before you pitch it, stock it or open near it.'],
+  ['discover', 'Discover new brands', 'What else fans of your customers’ favourites love, minus the names everyone already carries.'],
+  ['bolt', 'What-if, any city', 'Thinking about a second shop? Re-run the same list for another city and see what moves.'],
 ]
 
-const EXAMPLES = [
-  ['denver', 'Outdoor-leaning gift shop in Denver'],
-  ['brooklyn', 'Apothecary and gift shop in Brooklyn'],
+const MCP = `{
+  "mcpServers": {
+    "${BRAND.slug}": {
+      "type": "http",
+      "url": "https://<your-${BRAND.slug}-domain>/api/mcp"
+    }
+  }
+}`
+
+// The real Denver drop, for the live demo and the marquee.
+const drop = denver.turns.flatMap((t) => t.replies).find((r) => r.type === 'drop').drop
+const pick = (g) => drop.sheet.rows.filter((r) => r.group === g).slice(0, 3)
+const DEMO = [0, 1, 2].flatMap((i) => [pick('stock')[i], pick('skip')[i], pick('consider')[i]]).filter(Boolean).map(({ name, group }) => ({ name, group }))
+// The same supplier list, sorted for four sample shops: what a bestseller list can't do.
+const firstDrop = (ex) => ex.turns.flatMap((t) => t.replies).find((r) => r.type === 'drop').drop
+const CROWDS = [['austin', 'Austin', austin], ['portland', 'Portland', portland], ['nashville', 'Nashville', nashville], ['losangeles', 'Los Angeles', losangeles]]
+const crowds = compareCrowds(CROWDS.map(([id, , ex]) => ({ id, drop: firstDrop(ex) })))
+const CALL = { stock: 'Stock', consider: 'Consider', skip: 'Skip' }
+const TICKER = [
+  'Built on Qloo taste data', ...drop.sheet.rows.filter((r) => r.group === 'stock').map((r) => `${r.name} · stock`),
+  'Checked against stockists in 12 US cities', ...drop.sheet.rows.filter((r) => r.group === 'skip').map((r) => `${r.name} · skip`),
+  '38 of 46 shop brands recognised', 'Works in Claude & ChatGPT via MCP',
 ]
 
-async function post(path, body) {
-  const response = await fetch(path, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
-  const data = await response.json().catch(() => ({}))
-  if (!response.ok) throw new Error(data.error || `The server answered ${response.status}.`)
-  return data
-}
-
-// A match the owner has accepted, as the { id, name } the sheet needs. The owner's wording is kept as the name.
-const accepted = (matches, answers) =>
-  matches
-    .filter((m) => m.state === 'matched' || (m.state === 'check' && answers[m.typed] === true))
-    .map((m) => ({ id: m.pick.id, name: m.typed }))
-
-function MatchList({ matches, answers, onAnswer }) {
-  const count = (state) => matches.filter((m) => m.state === state).length
-  return (
-    <div className="matches">
-      <p className="tally">
-        <b>{count('matched')}</b> matched · <b>{count('check')}</b> to check · <b>{count('unknown')}</b> not known to Qloo
-      </p>
-      <ul>
-        {matches.filter((m) => m.state !== 'matched').map((m) => (
-          <li key={m.typed} className={m.state}>
-            <div>
-              <strong>{m.typed}</strong>
-              {m.state === 'check' ? (
-                <span> Qloo found <em>{m.pick.name}</em>{m.pick.about ? `: ${m.pick.about}` : ''}</span>
-              ) : (
-                <span> Not found. It is left off the sheet, not guessed.</span>
-              )}
-            </div>
-            {m.state === 'check' && (
-              <div className="yesno" role="group" aria-label={`Is ${m.pick.name} the right match for ${m.typed}?`}>
-                <button aria-pressed={answers[m.typed] === true} onClick={() => onAnswer(m.typed, true)}>That's it</button>
-                <button aria-pressed={answers[m.typed] === false} onClick={() => onAnswer(m.typed, false)}>Not it</button>
-              </div>
-            )}
-          </li>
-        ))}
-      </ul>
-    </div>
-  )
-}
-
-function Sheet({ sheet, shop }) {
-  const [open, setOpen] = useState(null)
-  return (
-    <section className="sheet" aria-label="Buy sheet">
-      <header>
-        <p className="kicker">Buy sheet</p>
-        <h2>
-          {shop.city ? `A shop in ${shop.city}` : 'A shop'}
-          {shop.signals.length > 0 && <> whose customers love {shop.signals.map((s) => s.name).join(', ')}</>}
-        </h2>
-        <p className="fine">
-          {shop.signals.length > 0 && <>Taste reading for {sheet.read.taste} of {sheet.read.of} brands. </>}
-          {shop.city && <>Local reading for {sheet.read.place} of {sheet.read.of}{sheet.placeReadAs ? `; Qloo read the place as ${sheet.placeReadAs}` : ''}.</>}
-        </p>
-      </header>
-      <div className="columns">
-        {GROUPS.map(([key, label, note]) => (
-          <div key={key} className={`column ${key}`}>
-            <h3>{label} <span>{sheet.counts[key]}</span></h3>
-            <p className="fine">{note}</p>
-            <ul>
-              {sheet.rows.filter((r) => r.group === key).map((r) => (
-                <li key={r.id}>
-                  <button className="brand" aria-expanded={open === r.id} onClick={() => setOpen(open === r.id ? null : r.id)}>
-                    <span className="pos">{r.taste ?? r.place ?? '–'}</span>
-                    {r.name}
-                  </button>
-                  {open === r.id && <ul className="reasons">{r.reasons.map((reason) => <li key={reason}>{reason}</li>)}</ul>}
-                </li>
-              ))}
-              {sheet.counts[key] === 0 && <li className="none">None</li>}
-            </ul>
-          </div>
-        ))}
-      </div>
-      <p className="fine caution">
-        Taste leads; a strong local reading lifts a brand one group and a weak one lowers it. Positions are within this
-        list only and show what this crowd tends to like, not what will sell. Tap a brand for its reasons.
-      </p>
-    </section>
-  )
-}
-
-function Plain({ plain, sheet }) {
-  if (!plain) return <p className="fine">Asking a plain AI the same question…</p>
-  if (!plain.available) return <p className="fine">The plain-AI comparison is unavailable right now. {plain.why}</p>
-  const guessed = {}
-  for (const [group, names] of Object.entries(plain.groups)) for (const n of names) guessed[n] = group
-  const rated = sheet.rows.filter((r) => r.group !== 'nosignal' && guessed[r.name])
-  const same = rated.filter((r) => guessed[r.name] === r.group).length
-  const opposite = rated.filter((r) => [guessed[r.name], r.group].sort().join() === 'skip,stock')
+export default function Home() {
   return (
     <>
-      <p>
-        The same question went to a language model with no Qloo data. It agreed on <b>{same} of {rated.length}</b> brands
-        {opposite.length > 0 ? <> and made the <b>opposite call on {opposite.length}</b>.</> : '.'}
-      </p>
-      {opposite.length > 0 && (
-        <table>
-          <thead><tr><th>Brand</th><th>With Qloo</th><th>Plain AI</th></tr></thead>
-          <tbody>
-            {opposite.map((r) => (
-              <tr key={r.id}><td>{r.name}</td><td className={r.group}>{r.group}</td><td className={guessed[r.name]}>{guessed[r.name]}</td></tr>
-            ))}
-          </tbody>
-        </table>
-      )}
-      <p className="fine">A difference does not prove either side right. It shows where Qloo's data changed the answer. Model: {plain.model}.</p>
-    </>
-  )
-}
+      <Nav />
+      <main>
+        <section className="hero">
+          <div className="wrap">
+            <HeroIn delay={0}>
+              <Link href="/app/map" className="eyebrow glass"><b>New</b> Market map: where any brand fits across 12 US cities →</Link>
+            </HeroIn>
+            <HeroTitle lines={['Know what pops', 'before you buy.']} accent="pops" />
+            <HeroIn delay={0.55}>
+              <p className="lead">
+                {BRAND.name} is the buying agent for independent shops. Paste a supplier&apos;s brand list, and it sorts every brand
+                into stock, consider or skip for your crowd, with the evidence behind each call.
+              </p>
+              <div className="ctas">
+                <Magnetic><Link href="/app/new" className="btn primary lg">Start free →</Link></Magnetic>
+                <Magnetic><Link href="/app/demo" className="btn glass lg">Try the live demo</Link></Magnetic>
+              </div>
+              <p className="note">Free while in beta · No card · US, UK, Europe, Japan and Australia</p>
+            </HeroIn>
+            <HeroIn delay={0.75} className="stage">
+              <span id="product" style={{ position: 'absolute', top: -80 }} />
+              <LiveShapes />
+              <Tilt className="shot glass" max={4}>
+                <div className="bar" aria-hidden="true"><i /><i /><i /></div>
+                <DemoVideo />
+              </Tilt>
+              <Float className="float glass f1"><b>Stanley → Stock</b>1st of 23 for Patagonia fans.<br /><i className="pk">⇄ bestseller list says skip</i></Float>
+              <Float className="float glass f2" delay={1.4}><b>Filson fits Seattle</b>#1 of 12 US cities on Qloo.<br /><i className="lm">Market map</i></Float>
+            </HeroIn>
+          </div>
+        </section>
 
-function Trace({ trace }) {
-  const short = (v) => String(v).replace(/[0-9A-F]{8}-[0-9A-F-]{27}/gi, (id) => `${id.slice(0, 8)}…`)
-  return (
-    <ol className="trace">
-      {trace.map((t, i) => (
-        <li key={i}>
-          <div><b>{t.label}</b> <span className="fine">{t.status} · {t.results ?? 0} result{t.results === 1 ? '' : 's'} · {t.cached ? 'cached' : `${t.ms} ms`}</span></div>
-          <code>GET {t.path}?{Object.entries(t.params).map(([k, v]) => `${k}=${short(v)}`).join('&')}</code>
-        </li>
-      ))}
-    </ol>
-  )
-}
-
-export default function Page() {
-  const [list, setList] = useState('')
-  const [matches, setMatches] = useState(null)
-  const [answers, setAnswers] = useState({})
-  const [city, setCity] = useState('')
-  const [loves, setLoves] = useState('')
-  const [result, setResult] = useState(null) // { sheet, shop }
-  const [plain, setPlain] = useState(null)
-  const [trace, setTrace] = useState([])
-  const [busy, setBusy] = useState('')
-  const [error, setError] = useState('')
-  const [note, setNote] = useState('')
-
-  const fail = (e) => { setError(e.message); setBusy('') }
-  const reset = () => { setResult(null); setPlain(null); setError(''); setNote('') }
-
-  async function matchBrands() {
-    reset(); setMatches(null); setAnswers({}); setTrace([])
-    try {
-      const names = parseList(list).slice(0, 50)
-      const found = []
-      const calls = []
-      // a few names per request, so progress shows and no request runs long
-      for (let i = 0; i < names.length; i += 8) {
-        setBusy(`Matching brands… ${Math.min(i + 8, names.length)} of ${names.length}`)
-        const data = await post('/api/match', { text: names.slice(i, i + 8).join('\n'), kind: 'brand' })
-        found.push(...data.matches); calls.push(...data.trace)
-      }
-      setMatches(found); setTrace(calls); setBusy('')
-    } catch (e) { fail(e) }
-  }
-
-  async function build() {
-    reset(); setBusy('Building the sheet…')
-    try {
-      let signals = []
-      let all = [...trace]
-      if (loves.trim()) {
-        const data = await post('/api/match', { text: loves, kind: 'signal' })
-        all = [...all, ...data.trace]
-        // A partial match here is used but named on the sheet, so a wrong one is visible and can be removed.
-        signals = data.matches.filter((m) => m.pick).map((m) => ({ id: m.pick.id, name: m.pick.name }))
-        const missed = data.matches.filter((m) => !m.pick).map((m) => m.typed)
-        if (missed.length) setNote(`Qloo did not know: ${missed.join(', ')}. Left out.`)
-      }
-      // a brand the customers already love is part of the question, so it is not also an answer
-      const brands = accepted(matches, answers).filter((b) => !signals.some((s) => s.id === b.id))
-      const data = await post('/api/sheet', { brands, signals, city })
-      const shop = { city: city.trim(), signals }
-      setResult({ sheet: data.sheet, shop }); setTrace([...all, ...data.trace]); setBusy('')
-      post('/api/baseline', { brands: brands.map((b) => b.name), signals: signals.map((s) => s.name), city })
-        .then(setPlain)
-        .catch(() => setPlain({ available: false, why: 'It could not be reached.' }))
-    } catch (e) { fail(e) }
-  }
-
-  async function loadExample(name) {
-    reset(); setBusy('Loading the example…')
-    try {
-      const data = await (await fetch(`/examples/${name}.json`)).json()
-      setList(data.list); setMatches(data.matches); setAnswers(data.answers); setCity(data.shop.city)
-      setLoves(data.loves); setResult({ sheet: data.sheet, shop: data.shop }); setPlain(data.plain); setTrace(data.trace)
-      setNote(`Saved example, made on ${data.madeOn}. Change anything and build again to run it live.`); setBusy('')
-    } catch { fail(new Error('The example could not be loaded.')) }
-  }
-
-  const ready = matches ? accepted(matches, answers).length : 0
-  const unanswered = matches ? matches.filter((m) => m.state === 'check' && answers[m.typed] === undefined).length : 0
-
-  return (
-    <main>
-      <header className="masthead">
-        <p className="logo">Buysheet</p>
-        <h1>What should your shop stock?</h1>
-        <p className="lead">
-          Paste a supplier's brand list. Say where your shop is and what your customers already love. Get the list sorted
-          into stock, consider and skip, with the evidence for each brand.
-        </p>
-        <div className="examples">
-          <span>Try an example:</span>
-          {EXAMPLES.map(([name, label]) => <button key={name} className="ghost" onClick={() => loadExample(name)}>{label}</button>)}
-        </div>
-      </header>
-
-      <section className="step">
-        <h2><span>1</span> The supplier's brands</h2>
-        <label htmlFor="list">One brand per line, or separated by commas. Up to 50.</label>
-        <textarea id="list" rows={7} value={list} onChange={(e) => setList(e.target.value)} placeholder={'Baggu\nLe Labo\nTopo Designs\nFilson\n…'} />
-        <button className="primary" onClick={matchBrands} disabled={!list.trim() || !!busy}>Match these brands</button>
-        {matches && <MatchList matches={matches} answers={answers} onAnswer={(typed, yes) => setAnswers({ ...answers, [typed]: yes })} />}
-      </section>
-
-      {matches && (
-        <section className="step">
-          <h2><span>2</span> Your shop</h2>
-          <div className="fields">
-            <div>
-              <label htmlFor="city">Where is it?</label>
-              <input id="city" value={city} onChange={(e) => setCity(e.target.value)} placeholder="Denver, Colorado" />
-            </div>
-            <div>
-              <label htmlFor="loves">What do your customers already love? Up to 5 brands, musicians, shows or films.</label>
-              <input id="loves" value={loves} onChange={(e) => setLoves(e.target.value)} placeholder="Patagonia, Carhartt, Tyler Childers" />
+        <section className="trust" aria-label="Highlights">
+          <div className="marquee">
+            <div className="marquee-track">
+              {[...TICKER, ...TICKER].map((t, i) => <span key={i} aria-hidden={i >= TICKER.length ? true : undefined}>{t}<i className="sep" /></span>)}
             </div>
           </div>
-          <button className="primary" onClick={build} disabled={!!busy || ready < 3 || (!city.trim() && !loves.trim())}>
-            Build the buy sheet
-          </button>
-          <p className="fine">
-            {ready} brand{ready === 1 ? '' : 's'} ready.
-            {unanswered > 0 && ` ${unanswered} still to check above; unanswered ones are left out.`}
-            {ready < 3 && ' A sheet needs at least 3.'}
-          </p>
         </section>
-      )}
 
-      <div aria-live="polite">
-        {busy && <p className="status">{busy}</p>}
-        {error && <p className="status error">{error}</p>}
-        {note && <p className="status note">{note}</p>}
-      </div>
+        <section className="section" id="problem">
+          <div className="wrap">
+            <Reveal className="section-head">
+              <p className="kicker">The problem</p>
+              <h2>Every order is a bet with your cash.</h2>
+              <p>Independent shops commit money to stock months ahead, on instinct and a rep&apos;s word. Sales history can&apos;t help with a brand you&apos;ve never carried, and a bestseller list knows nothing about your crowd.</p>
+            </Reveal>
+            <Spotlight className="grid-2 cost-row">
+              {COST.map((s, i) => (
+                <Reveal key={s.big} delay={i * 0.08} className={`card stat spot cost${i === 0 ? ' solid' : ' glass'}`}>
+                  <b style={{ '--len': s.big.length }}><CountUp value={s.big} /></b><span>{s.line}</span><StatViz viz={s.viz} /><small><a href={s.href} target="_blank" rel="noreferrer">{s.source}</a></small>
+                </Reveal>
+              ))}
+            </Spotlight>
+            <Spotlight className="grid-4">
+              {MARKET.map((s, i) => (
+                <Reveal key={s.big} delay={i * 0.08} className="card stat glass spot">
+                  <b style={{ '--len': s.big.length }}>{s.big}</b><span>{s.line}</span><small><a href={s.href} target="_blank" rel="noreferrer">{s.source}</a></small>
+                </Reveal>
+              ))}
+            </Spotlight>
+          </div>
+        </section>
 
-      {result && (
-        <>
-          <Sheet sheet={result.sheet} shop={result.shop} />
-          <section className="panel">
-            <h2>What a plain AI would say</h2>
-            <Plain plain={plain} sheet={result.sheet} />
-          </section>
-        </>
-      )}
+        <section className="section">
+          <div className="wrap">
+            <Reveal className="section-head center">
+              <p className="kicker">The product</p>
+              <h2>A buyer&apos;s workspace, with an agent that shows its work.</h2>
+              <p>Everything a small shop needs to decide what to order, in one place.</p>
+            </Reveal>
+            <Spotlight className="grid-3">
+              {FEATURES.map(([icon, h, p], i) => (
+                <Reveal key={h} delay={(i % 3) * 0.08} className="card feature glass spot">
+                  <div className="ic"><Icon name={icon} /></div><h3>{h}</h3><p>{p}</p>
+                </Reveal>
+              ))}
+            </Spotlight>
+          </div>
+        </section>
 
-      {trace.length > 0 && (
-        <details className="panel">
-          <summary>Show the work: {trace.length} Qloo call{trace.length === 1 ? '' : 's'}</summary>
-          <Trace trace={trace} />
-        </details>
-      )}
+        <section className="section" id="how">
+          <div className="wrap">
+            <Reveal className="section-head">
+              <p className="kicker">How it works</p>
+              <h2>Your crowd, not the average shopper.</h2>
+              <p>
+                {BRAND.name} asks Qloo two separate questions about every brand: do fans of what your customers love also love it, and
+                how does it rank in your city? Taste leads; the city lifts or lowers. Anything Qloo isn&apos;t sure about is checked with
+                you, never guessed. Here it is sorting a real list:
+              </p>
+            </Reveal>
+            <Reveal><SortDemo rows={DEMO} /></Reveal>
+            <div className="steps-row">
+              {[['Set up your shop once', 'Where it is, and the brands, musicians or shows your regulars love.'], ['Paste a supplier list', 'Any line sheet. Unclear names are confirmed with you.'], ['Get your drop', 'Stock, consider, skip, with reasons. Make your calls, ask follow-ups, send the order.']].map(([h, p], i) => (
+                <Reveal key={h} delay={i * 0.1} className="step-item">
+                  <span className="step-n">{String(i + 1).padStart(2, '0')}</span><b>{h}</b><p>{p}</p>
+                </Reveal>
+              ))}
+            </div>
+          </div>
+        </section>
 
-      <footer>
-        <p>Built on Qloo's Taste AI for the Qloo Agentic Hackathon. Results describe what groups of people tend to like. They are not predictions about any one person, or about sales.</p>
-      </footer>
-    </main>
+        <section className="section" id="without">
+          <div className="wrap">
+            <Reveal className="section-head">
+              <p className="kicker">With Qloo vs without</p>
+              <h2>A bestseller list gives every shop the same answer.</h2>
+              <p>
+                We sorted one supplier list for four sample shops with different crowds. A popularity-only list would make the same
+                call for all four. With Qloo&apos;s taste data, <b style={{ color: 'var(--text)' }}><CountUp value={`${crowds.changed} of ${crowds.total}`} /></b> brands
+                get a different call depending on who shops there.
+              </p>
+              <StatViz viz={{ type: 'dots', of: crowds.total, lit: crowds.changed }} />
+            </Reveal>
+            <Reveal className="table-wrap glass">
+              <table className="table crowd-table">
+                <thead>
+                  <tr><th>Brand</th><th>Bestseller list <span className="faint">(every shop)</span></th>{CROWDS.map(([id, city, ex]) => <th key={id}>{city}<div className="faint" style={{ fontWeight: 400 }}>fans of {firstDrop(ex).loves.slice(0, 2).join(', ')}</div></th>)}</tr>
+                </thead>
+                <tbody>
+                  {crowds.brands.slice(0, 8).map((b) => (
+                    <tr key={b.name}>
+                      <td><div className="brand-cell"><span className="logo-sq">{b.name.slice(0, 2)}</span>{b.name}</div></td>
+                      <td>{b.generic ? <span className="badge plain">{CALL[b.generic]}</span> : '—'}</td>
+                      {CROWDS.map(([id]) => <td key={id}><span className={`badge ${b.calls[id]}`}>{CALL[b.calls[id]]}</span></td>)}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </Reveal>
+            <p className="swipe-hint-sm faint">Swipe the table to see all four shops →</p>
+            <p className="faint" style={{ fontSize: 12.5, marginTop: 12 }}>Real Restocked output from Qloo&apos;s API for sample shops, recorded {austin.recordedOn}. Open any of them in <Link href="/app/explore">Sample shops</Link>.</p>
+          </div>
+        </section>
+
+        <section className="section" id="proof">
+          <div className="wrap">
+            <Reveal className="section-head">
+              <p className="kicker">Why trust it</p>
+              <h2>We checked it against reality.</h2>
+              <p>Before building, we compared Qloo&apos;s city rankings with where brands are actually stocked. Then we made the agent show every call it makes.</p>
+            </Reveal>
+            <Spotlight className="grid-4">
+              {PROOF.map((s, i) => (
+                <Reveal key={s.big} delay={i * 0.08} className="card stat glass spot"><b style={{ '--len': s.big.length }}>{s.big}</b><span>{s.line}</span><small>{s.source}</small></Reveal>
+              ))}
+            </Spotlight>
+          </div>
+        </section>
+
+
+        <section className="section" id="opportunity">
+          <div className="wrap">
+            <Reveal className="section-head">
+              <p className="kicker">Why this becomes a big company</p>
+              <h2>Millions of shops. No buying tool built for them.</h2>
+              <p>Independent retail is growing, AI agents are arriving in commerce, and the companies that serve small shops are already worth billions. None of them helps a shop decide what its own crowd will buy. That is the gap Restocked fills, with Qloo&apos;s taste data underneath.</p>
+            </Reveal>
+            <Reveal><p className="kicker" style={{ marginBottom: 12 }}>Tailwinds</p></Reveal>
+            <Spotlight className="grid-4">
+              {TAILWINDS.map((s, i) => (
+                <Reveal key={s.big} delay={i * 0.08} className="card stat glass spot"><b style={{ '--len': s.big.length }}>{s.big}</b><span>{s.line}</span><StatViz viz={s.viz} /><small><a href={s.href} target="_blank" rel="noreferrer">{s.source}</a></small></Reveal>
+              ))}
+            </Spotlight>
+            <div className="opp-row">
+              <div>
+                <Reveal><p className="kicker" style={{ margin: '36px 0 12px' }}>The category already builds big companies</p></Reveal>
+                <Spotlight className="comp-list">
+                  {COMPARABLES.map((s, i) => (
+                    <Reveal key={s.big} delay={i * 0.08} className="card glass spot comp"><b style={{ '--len': s.big.length }}>{s.big}</b><div><span>{s.line}</span><small><a href={s.href} target="_blank" rel="noreferrer">{s.source}</a></small></div></Reveal>
+                  ))}
+                </Spotlight>
+              </div>
+              <Reveal delay={0.1} className="card sizing solid">
+                <p className="kicker" style={{ margin: 0 }}>The math, on one plan</p>
+                <div className="sizing-big" style={{ '--len': 9 }}><CountUp value={SIZING.shops.toLocaleString('en-US')} /></div>
+                <p className="mute" style={{ margin: '2px 0 16px' }}>small retailers in the US and EU (figures above)</p>
+                {SIZING.at.map((a) => (
+                  <div key={a.pct} className="sizing-line">
+                    <span>{a.pct}% on the Shop plan</span>
+                    <b style={{ '--len': 6 }}><CountUp value={`$${(a.arr / 1e6).toFixed(1)}M`} /></b>
+                    <small>{a.shops.toLocaleString('en-US')} shops × ${SIZING.plan}/yr</small>
+                  </div>
+                ))}
+                <p className="faint" style={{ fontSize: 12, margin: '14px 0 0' }}>Recurring revenue before the brand side, which pays to see where it fits. Simple arithmetic, not a forecast.</p>
+              </Reveal>
+            </div>
+          </div>
+        </section>
+
+        <section className="section" id="assistants">
+          <div className="wrap split">
+            <Reveal>
+              <p className="kicker">For AI assistants</p>
+              <h2>Already live in your AI.</h2>
+              <p className="mute" style={{ fontSize: 16.5, lineHeight: 1.6, marginBottom: 20 }}>{BRAND.name} is an MCP server. Add one line to Claude or ChatGPT and your assistant gets the same tools and the same data.</p>
+              <ul className="ticks">{TOOLS.map((t) => <li key={t.name}><b className="mono" style={{ fontSize: 13 }}>{t.name}</b> · {t.title}</li>)}</ul>
+            </Reveal>
+            <Reveal delay={0.1}><TypeCode code={MCP} label="MCP configuration" /></Reveal>
+          </div>
+        </section>
+
+        <section className="wrap">
+          <Reveal className="cta-band">
+            <LiveShapes className="shapes" depth={40} />
+            <div><h2>Your next order, sorted.</h2><p>Free while in beta. Set up your shop in a minute.</p></div>
+            <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', position: 'relative' }}>
+              <Magnetic><Link href="/app/new" className="btn brand lg">Start free</Link></Magnetic>
+              <Magnetic><Link href="/pricing" className="btn lg" style={{ background: 'rgba(11,11,11,.55)', color: '#f5f5f2', borderColor: 'rgba(255,255,255,.2)', backdropFilter: 'blur(12px)' }}>See pricing</Link></Magnetic>
+            </div>
+          </Reveal>
+        </section>
+      </main>
+      <Footer />
+    </>
   )
 }
