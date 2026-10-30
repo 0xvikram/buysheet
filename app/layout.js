@@ -1,3 +1,4 @@
+import { Analytics } from '@vercel/analytics/next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import { BRAND } from '../lib/brand.js'
 import './globals.css'
@@ -22,7 +23,11 @@ export default function RootLayout({ children }) {
       <head>
         <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
       </head>
-      <body>{children}</body>
+      <body>
+        {children}
+        {/* Vercel Web Analytics: page views, no cookies; only reports once enabled for the project on Vercel */}
+        <Analytics />
+      </body>
     </html>
   )
 }
