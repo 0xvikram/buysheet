@@ -87,3 +87,13 @@ test('map questions name one brand', () => {
   assert.deepEqual(parse('Where should I sell Stanley?'), { intent: 'map', name: 'Stanley' })
   assert.equal(parse('What if I opened in Austin?').intent, 'whatif')
 })
+
+test('questions about data Qloo does not have get an honest topic, seasons are recognised, brands are spotted', () => {
+  assert.deepEqual(parse('how much margin does Baggu give?'), { intent: 'nodata', topic: 'pricing', names: ['Baggu'] })
+  assert.equal(parse('which brand is trending right now').topic, 'trend')
+  assert.equal(parse('what will my sales be next month').topic, 'sales')
+  assert.deepEqual(parse('what should I stock for christmas?'), { intent: 'season', season: 'christmas' })
+  assert.deepEqual(parse('is Filson good for a beach town?'), { intent: 'help', unclear: true, names: ['Filson'] })
+  assert.deepEqual(parse('Is Le Labo too fancy'), { intent: 'help', unclear: true, names: ['Le Labo'] })
+  assert.equal(parse('compare Patagonia and North Face').intent, 'compare')
+})

@@ -26,7 +26,7 @@ test('help and unclear messages need no network', async () => {
   const hi = await respond('hi', {})
   assert.match(hi.replies[0].text, /buying agent/)
   const odd = await respond('blue elephants', {})
-  assert.match(odd.replies[0].text, /didn't catch that/)
+  assert.match(odd.replies[0].text, /can't answer that one/)
 })
 
 test('asking why before any drop explains what to do', async () => {
